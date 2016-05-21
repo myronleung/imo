@@ -1,0 +1,45 @@
+{% extends "imo_app/base.html" %}
+
+{% block content %}
+
+  <p><h5><strong>{{question.question_text}}</strong></h5></p>
+  <p style="color:gray">{{q.pub_date}}</p>
+  {% for c in choices %}
+      <p>{{ c.choice_text }}: {{c.votes}}</p>
+  {% endfor %}
+
+  {% for i in check_author %}
+  <form action="{% url 'imo_app:change_question' question.id %}" method="post">
+    {% csrf_token %}
+    <!--!<input type="submit" value="edit" name='edit' /-->
+    <input type="submit" value="delete" name='delete' />
+  </form>
+  {% endfor %}
+
+
+  <form action="{% url 'imo_app:add_comment' question.id %}" method="post">
+    {% csrf_token %}
+  <p><input type="TextArea" style = "height:30px; width:700px" class = 'comment_text' value="" name='comment_text'/></p>
+  <input type="submit" value="Comment"  />
+  </form>
+
+
+  <br></br>
+  <br></br>
+  <h5> Comments </h5>
+      <hr>
+
+  {% for i in comments %}
+      <div class="Comments">
+          <div class="date"><strong>{{ i.author }}</strong> <i>{{ i.pub_date }}</i></div>
+          <div class="divider"></div>
+          <p>{{ i.comment_text }}</p>
+          <br></br>
+      </div>
+  {% empty %}
+
+      <p>No comments here yet :(</p>
+  {% endfor %}
+<br></br>
+<br></br>
+{% endblock content %}

@@ -1,0 +1,51 @@
+{% extends "imo_app/base.html" %}
+
+{% block content %}
+  <div class="row">
+    <div class="col m12">
+      <p>Welcome to IMO!  The new way to get or give an opinion on a variety of topics.</p>
+      <p>Want to request opinions on some products you are thinking of buying, or decisions you have to make?
+        Click the “create new topic” and specify your question parameters.  Choose whether to ask a private group,
+        friends, or the general public!</p>
+      <p>For all future questions be sure to check out our <a href="faq/">FAQ</a> guide in the settings tab.</p>
+    </div>
+
+  </div>
+    {% if user.is_authenticated %}
+      <h4>Active Polls</h4>
+      <div class="row">
+
+
+        {% for i in q_all %}
+          <div class="col m4">
+            <div class="card" >
+              <div class="card-content">
+                <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}">{{ i.question_text }}</a></span>
+                <br>
+                <div class="chip">
+                  {{ i.author.user.first_name}} {{ i.author.user.last_name}}
+                </div>
+                <p class="grey-text">{{ i.pub_date }}</p>
+                <p class="truncate">{{ i.description }}</p>
+              </div>
+              <a href="{% url 'imo_app:detail' i.id %}"><div class="orange-text waves-effect waves-teal card-action btn-flat" style="width:100%; height: 100%">
+                Vote
+              </div></a>
+
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    {% endif %}
+
+{% endblock content %}

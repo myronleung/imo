@@ -1,0 +1,26 @@
+{% extends "imo_app/base.html" %}
+
+{% block content %}
+  <p><h5><strong>{{question.question_text}}</h5></strong></p>
+  <p style="color:gray">{{q.pub_date}}</p>
+
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+  <form action="{% url 'imo_app:submit_vote' question.id %}" method="post">
+    {% csrf_token %}
+    {% for choice in question.choice_set.all %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+    {% endfor %}
+    <br></br>
+  <input class='btn' type="submit" value="Vote" />
+  </form>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+  <br></br>
+{% endblock content %}

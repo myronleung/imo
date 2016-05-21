@@ -1,0 +1,9 @@
+{% extends 'imo_app/base.html' %}
+
+{% block content %}
+    <h3>New comment</h3>
+    <form method="POST" class="CommentForm">{% csrf_token %}
+        {{ form.CommentForm }}
+        <button type="submit" class="save btn btn-default">Send</button>
+    </form>
+{% endblock %}
