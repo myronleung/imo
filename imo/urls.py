@@ -20,12 +20,13 @@ import settings
 
 urlpatterns = [
     url(r'^imo_app/', include('imo_app.urls')),
-    url(r'^admin/', admin.site.urls),
-
-    #Attempt to get static files
     urlpatterns += patterns('',
         (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
     )
+    url(r'^admin/', admin.site.urls),
+
+    #Attempt to get static files
+
     # redierect home page to journal_app index
     url(r'^', lambda r: HttpResponseRedirect('imo_app/')),
 ]
