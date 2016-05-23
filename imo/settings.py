@@ -132,3 +132,5 @@ LOGIN_URL = '/imo_app/view_login/'
 
 if 'SECRET_KEY' in os.environ:
     CSRF_COOKIE_SECURE = True
+
+    SESSION_COOKIE_SECURE = True
