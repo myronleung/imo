@@ -139,4 +139,6 @@ if 'SECRET_KEY' in os.environ:
 
     SECURE_BROWSER_XSS_FILTER = True
 
-    SECURE_SSL_REDIRECT = True
+    CSRF_COOKIE_HTTPONLY = True
+
+    X_FRAME_OPTIONS = 'DENY'
