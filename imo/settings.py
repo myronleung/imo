@@ -127,7 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(imo, 'static')
+STATIC_ROOT = os.path.join(imo_app, 'static')
 LOGIN_URL = '/imo_app/view_login/'
 
 if 'SECRET_KEY' in os.environ:
