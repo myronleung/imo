@@ -27,3 +27,5 @@ urlpatterns = [
     # redierect home page to journal_app index
     url(r'^', lambda r: HttpResponseRedirect('imo_app/')),
 ]
+
+urlpatterns += patterns(”, (r’^static/(?P.*)$’, ‘django.views.static.serve’, {‘document_root’: settings.STATIC_ROOT}),
