@@ -28,7 +28,7 @@ if 'SECRET_KEY' in os.environ:
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = False
 
-    ALLOWED_HOSTS = [".herokuapp.com", ".imo-mvp.herokuapp.com"]
+    ALLOWED_HOSTS = []
 else:
     SECRET_KEY = 'fl_v9(iu_qm_+mq^7c)bm0qcue(j%3=n63zx-6^&#17^)(ba5f'
 
