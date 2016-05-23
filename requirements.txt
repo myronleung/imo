@@ -4,3 +4,4 @@ nltk==3.2.1
 virtualenv==14.0.6
 watson-developer-cloud==0.10.0
 gunicorn==19.4.5
+whitenoise==3.1
