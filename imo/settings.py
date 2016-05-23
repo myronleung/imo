@@ -134,3 +134,5 @@ if 'SECRET_KEY' in os.environ:
     CSRF_COOKIE_SECURE = True
 
     SESSION_COOKIE_SECURE = True
+
+    SECURE_CONTENT_TYPE_NOSNIFF = True
