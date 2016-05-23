@@ -142,3 +142,5 @@ if 'SECRET_KEY' in os.environ:
     CSRF_COOKIE_HTTPONLY = True
 
     X_FRAME_OPTIONS = 'DENY'
+
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
