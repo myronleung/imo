@@ -16,7 +16,6 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-import settings
 
 urlpatterns = [
     url(r'^imo_app/', include('imo_app.urls')),
