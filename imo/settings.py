@@ -22,7 +22,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 # Checks if running on Heroku or local
 # If heroku, sets to public settings, otherwise local
-if 'DYNO' in os.environ:
+if 'SECRET_KEY' in os.environ:
     SECRET_KEY = 'SECRET_KEY' in os.environ
 
     # SECURITY WARNING: don't run with debug turned on in production!
@@ -125,20 +125,23 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'imo_app/static')
 STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(BASE_DIR, 'imo_app/static'),
 )
+
 
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-if 'DYNO' in os.environ:
+
+if 'SECRET_KEY' in os.environ:
+
     CSRF_COOKIE_SECURE = True
 
     SESSION_COOKIE_SECURE = True
