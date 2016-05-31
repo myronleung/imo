@@ -16,6 +16,8 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.http import HttpResponseRedirect
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     url(r'^imo_app/', include('imo_app.urls')),
@@ -26,3 +28,6 @@ urlpatterns = [
     # redierect home page to journal_app index
     url(r'^', lambda r: HttpResponseRedirect('imo_app/')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
