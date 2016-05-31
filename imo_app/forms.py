@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import Question
 
 
 class RegistrationForm(forms.Form):
@@ -12,17 +13,15 @@ class LoginForm(forms.Form):
     username = forms.CharField(label='Username:', max_length=200)
     password = forms.CharField(label='Password:', widget=forms.PasswordInput())
 
-class NewEntryForm(forms.Form):
-    question_text = forms.CharField(label='Question: ', max_length = 200)
-    description = forms.CharField(widget=forms.Textarea)
-    choice1 = forms.CharField(label='Choice 1: ', max_length = 200)
-    choice2 = forms.CharField(label='Choice 2: ', max_length = 200)
-
-class ChangeEntryForm(forms.Form):
-    question_text = forms.CharField(label='Question: ', max_length = 200)
-    description = forms.CharField(widget=forms.Textarea)
-    choice1 = forms.CharField(label='Choice 1: ', max_length = 200)
-    choice2 = forms.CharField(label='Choice 2: ', max_length = 200)
+class NewEntryForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = [
+            "question_text",
+            "description",
+            "choice1",
+            "choice2"
+        ]
 
 class VoteForm(forms.Form):
     def __init__(self, *args, **kwargs):

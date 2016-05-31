@@ -16,6 +16,8 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200)
     description = models.TextField(default = '')
     pub_date = models.DateTimeField('date published')
+    choice1 = models.CharField(default = '', max_length = 200)
+    choice2 = models.CharField(default = '', max_length = 200)
 
     class Meta:
         ordering = ['-pub_date']
@@ -23,8 +25,13 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
+    def get_absolute_url(self):
+        return reverse("detail", kwargs={"id": self.id})
+        #return "/posts/%s/" %(self.id)
+
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    image = models.FileField(null=True, blank=True)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
 

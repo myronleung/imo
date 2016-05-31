@@ -11,7 +11,7 @@
   {% for i in check_author %}
   <form action="{% url 'imo_app:change_question' question.id %}" method="post">
     {% csrf_token %}
-    <!--!<input type="submit" value="edit" name='edit' /-->
+    <input type="submit" value="edit" name='edit' />
     <input type="submit" value="delete" name='delete' />
   </form>
   {% endfor %}

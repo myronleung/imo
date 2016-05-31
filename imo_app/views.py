@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ChangeEntryForm
+from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm
 from .models import UserProfile, Question, Choice, Comment, Voted
 
 from django.utils import timezone
@@ -118,7 +118,7 @@ def view_newentry(request):
     form = NewEntryForm()
     return render(request, 'imo_app/view_newentry.html', {'form': form})
 
-def submit_newentry(request):
+def submit_newentry(request, id=None):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -215,12 +215,21 @@ def results(request, question_id):
     return render(request, 'imo_app/results.html', context)
 
 def change_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
     if (request.POST.get('edit')):
-        template = loader.get_template('imo_app/change_entry.html')
+        template = loader.get_template('imo_app/view_newentry.html')
+        form = NewEntryForm(request.POST or None, instance=question)
         # Display formg
-        form = ChangeEntryForm()
-        Question.objects.filter(id=question_id).delete()
-        return render(request, 'imo_app/change_entry.html', {'form': form})
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.save()
+            return HttpResponseRedirect(instance.get_absolute_url())
+        context = {
+            'question': question.id,
+            "title": "Detail",
+            "form": form,
+        }
+        return render(request, "view_newentry.html", context)
     elif (request.POST.get('delete')):
         Question.objects.filter(id=question_id).delete()
         return HttpResponseRedirect(reverse('imo_app:index'))
