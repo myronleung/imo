@@ -22,7 +22,9 @@ class NewEntryForm(forms.ModelForm):
             "choice1",
             "image1",
             "choice2",
-            "image2"
+            "image2",
+            "choice3",
+            "image3"
         ]
 
 class VoteForm(forms.Form):

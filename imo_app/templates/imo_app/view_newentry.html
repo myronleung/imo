@@ -25,7 +25,7 @@
         <br></br>
         {{ form.choice1 }}
       </div>
-      <div class="input-field">
+      <div class="image1" name="image1">
         {{ form.subject.errors }}
         <label for='{{ form.image1 }}'></label>
         <br></br>
@@ -37,11 +37,24 @@
         <br></br>
         {{ form.choice2 }}
       </div>
-      <div class="input-field">
+      <div class="image2" name="image2">
         {{ form.subject.errors }}
-        <label for='{{ form.image2 }}'> </label>
+        <label for='{{ form.image2 }}'></label>
         <br></br>
         {{ form.image2 }}
+      </div>
+      <div class="input-field">
+        {{ form.subject.errors }}
+        <label for='{{ form.choice3 }}'> Choice 3: </label>
+        <br></br>
+        {{ form.choice3 }}
+      </div>
+      <div class="image3" name="image3">
+        {{ form.subject.errors }}
+        <label for='{{ form.image3 }}'></label>
+        <br></br>
+        {{ form.image3 }}
+        <br></br>
       </div>
       <input type="submit" value="Post"  class='btn'/>
     </form>

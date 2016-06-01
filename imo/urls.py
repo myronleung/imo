@@ -26,7 +26,7 @@ urlpatterns = [
     #Attempt to get static files
 
     # redierect home page to journal_app index
-    url(r'^', lambda r: HttpResponseRedirect('imo_app/')),
+
 ]
 
 if settings.DEBUG:

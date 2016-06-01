@@ -1,5 +1,7 @@
 {% extends "imo_app/base.html" %}
 
+
+
 {% block content %}
   <p><h5><strong>{{question.question_text}}</h5></strong></p>
   <p style="color:gray">{{q.pub_date}}</p>
@@ -8,9 +10,16 @@
   <form action="{% url 'imo_app:submit_vote' question.id %}" method="post">
     {% csrf_token %}
     {% for choice in question.choice_set.all %}
+        {% if choice.choice_text != '' %}
         <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
+        {% endif %}
         <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
+        {% if choice.image != null %}
+        <img src='{{ choice.image.url }}' class='img-responsive' width="250px" height="250px" /> <br />
+        {% endif %}
     {% endfor %}
+
+    <img src='{{ choice.image1.url }}' class='img-responsive' />
     <br></br>
   <input class='btn' type="submit" value="Vote" />
   </form>

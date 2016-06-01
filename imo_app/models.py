@@ -20,6 +20,8 @@ class Question(models.Model):
     image1 = models.ImageField(null=True, blank=True)
     choice2 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image2 = models.ImageField(null=True, blank=True)
+    choice3 = models.CharField(null=True, blank=True, default = '', max_length = 200)
+    image3 = models.ImageField(null=True, blank=True)
 
     class Meta:
         ordering = ['-pub_date']
@@ -33,7 +35,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    image = models.FileField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
 

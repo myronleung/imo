@@ -133,10 +133,11 @@ def submit_newentry(request, id=None):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = NewEntryForm(request.POST or None, request.FILES or none)
+        form = NewEntryForm(request.POST or None, request.FILES or None)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
+            instance = form.save(commit=False)
             current_user = request.user
             question_text = form.cleaned_data['question_text']
             author =  UserProfile.objects.get(id=current_user.id)
@@ -144,14 +145,18 @@ def submit_newentry(request, id=None):
             pub_date = timezone.now()
             choice1 = form.cleaned_data['choice1']
             choice2 = form.cleaned_data['choice2']
-            image1 = form.cleaned_data['image1']
-            image2 = form.cleaned_data['image2']
+            choice3 = form.cleaned_data['choice3']
+            image1 = instance.image1
+            image2 = instance.image2
+            image3 = instance.image3
             q = Question(question_text = question_text, author = author, description = description, pub_date = pub_date)
             q.save()
             c1 = Choice(question = q, choice_text = choice1, image = image1)
             c1.save()
             c2 = Choice(question = q, choice_text = choice2, image = image2)
             c2.save()
+            c3 = Choice(question = q, choice_text = choice3, image = image3)
+            c3.save()
 
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('imo_app:detail', args=[q.id]))
