@@ -6,7 +6,9 @@
   <p style="color:gray">{{q.pub_date}}</p>
   {% for c in choices %}
       <p>{{ c.choice_text }}: {{c.votes}}</p>
+      {% if c.image != '' %}
       <img src='{{ c.image.url }}' class='img-responsive' width="250px" height="250px" />
+      {% endif %}
   {% endfor %}
 
   {% for i in check_author %}
