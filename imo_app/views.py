@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 from django.core.urlresolvers import reverse
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
@@ -15,9 +15,20 @@ from .models import UserProfile, Question, Choice, Comment, Voted
 from django.utils import timezone
 # Create your views here.
 def index(request):
-    q_all = Question.objects.all()
+    q_list = Question.objects.all()
+    paginator = Paginator(q_list, 12) # Show 25 contacts per page
+
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
     current_user = request.user
-    context = {'q_all': q_all, 'current_user': current_user}
+    context = {'q_all': q, 'current_user': current_user}
     return render(request, 'imo_app/index.html', context)
 
 @login_required

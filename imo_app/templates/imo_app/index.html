@@ -35,7 +35,24 @@
             </div>
           </div>
         {% endfor %}
+        <!-- this is the pagination that allows us to have multiple pages -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if q_all.has_previous %}
+                    <a href="?page={{ q_all.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ q_all.number }} of {{ q_all.paginator.num_pages }}.
+                </span>
+
+                {% if q_all.has_next %}
+                    <a href="?page={{ q_all.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
       </div>
+
     {% else %}
     <br></br>
     <br></br>
