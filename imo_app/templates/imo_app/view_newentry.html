@@ -3,7 +3,7 @@
 {% block content %}
   <h3>Create New Poll</h3>
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    <form class="" action="{% url 'imo_app:submit_newentry'%}" method="post">
+    <form class="" action="{% url 'imo_app:submit_newentry'%}" enctype = 'multipart/form-data' method="post">
       {% csrf_token %}
       <!-- Questions -->
       <div class="input-field">
@@ -27,9 +27,21 @@
       </div>
       <div class="input-field">
         {{ form.subject.errors }}
+        <label for='{{ form.image1 }}'></label>
+        <br></br>
+        {{ form.image1 }}
+      </div>
+      <div class="input-field">
+        {{ form.subject.errors }}
         <label for='{{ form.choice2 }}'> Choice 2: </label>
         <br></br>
         {{ form.choice2 }}
+      </div>
+      <div class="input-field">
+        {{ form.subject.errors }}
+        <label for='{{ form.image2 }}'> </label>
+        <br></br>
+        {{ form.image2 }}
       </div>
       <input type="submit" value="Post"  class='btn'/>
     </form>

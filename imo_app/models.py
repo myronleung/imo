@@ -17,7 +17,9 @@ class Question(models.Model):
     description = models.TextField(default = '')
     pub_date = models.DateTimeField('date published')
     choice1 = models.CharField(default = '', max_length = 200)
-    choice2 = models.CharField(default = '', max_length = 200)
+    image1 = models.ImageField(null=True, blank=True)
+    choice2 = models.CharField(null=True, blank=True, default = '', max_length = 200)
+    image2 = models.ImageField(null=True, blank=True)
 
     class Meta:
         ordering = ['-pub_date']
