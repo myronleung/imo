@@ -197,6 +197,10 @@ def submit_vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
+        question.total_votes += 1
+        question.save()
+        selected_choice.percentage = round((selected_choice.votes / question.total_votes) * 100.0,2)
+        selected_choice.save()
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.

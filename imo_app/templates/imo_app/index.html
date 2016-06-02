@@ -14,11 +14,13 @@
     {% if user.is_authenticated %}
       <h4>Active Polls</h4>
       <div class="row">
+        <div class="col m12">
         <form method='GET' action=''>
         <input type='text' name='q' placeholder='Search posts' value='{{ request.GET.q }}' />
         <input type='submit' value='Search' />
         </form>
         <br></br>
+      </div>
 
         {% for i in q_all %}
           <div class="col m4">
