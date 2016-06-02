@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
+from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -16,8 +17,17 @@ from django.utils import timezone
 # Create your views here.
 def index(request):
     q_list = Question.objects.all()
-    paginator = Paginator(q_list, 12) # Show 25 contacts per page
+    query = request.GET.get("q")
+    if query:
+        q_list = q_list.filter(
+            Q(question_text__icontains=query)|
+            Q(description__icontains=query)|
+            Q(choice1__icontains=query)|
+            Q(choice2__icontains=query)|
+            Q(choice3__icontains=query)
+            ).distinct()
 
+    paginator = Paginator(q_list, 12) # Show 25 contacts per page
     page = request.GET.get('page')
     try:
         q = paginator.page(page)
