@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -31,7 +32,7 @@ class Question(models.Model):
         return self.question_text
 
     def get_absolute_url(self):
-        return reverse("detail", kwargs={"id": self.id})
+        return reverse('imo_app:results', args=[self.id])
         #return "/posts/%s/" %(self.id)
 
 class Choice(models.Model):

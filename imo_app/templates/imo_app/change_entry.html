@@ -1,21 +1,21 @@
-{% extends 'imo_app/view_newentry.html' %}
+{% extends 'imo_app/base.html' %}
 
 {% block content %}
-  <h3>Update Poll</h3>
+  <h3>Create New Poll</h3>
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    <form class="" action="{% url 'imo_app:submit_newentry' %}" method="post">
+    <form action='' enctype = 'multipart/form-data' method='POST'>
       {% csrf_token %}
       <!-- Questions -->
       <div class="input-field">
         {{ form.question.errors }}
-        <label for='{{ form.question_text }}'> Question: </label>
+        <label for='{{ form.question_text }}'> Question (required): </label>
         <br></br>
         {{ form.question_text }}
       </div>
       <!-- Choices -->
       <div class="input-field">
         {{ form.subject.errors }}
-        <label for='{{ form.description }}'> Description: </label>
+        <label for='{{ form.description }}'> Description (required): </label>
         <br></br>
         {{ form.description }}
       </div>
@@ -25,11 +25,37 @@
         <br></br>
         {{ form.choice1 }}
       </div>
+      <div class="image1" name="image1">
+        {{ form.subject.errors }}
+        <label for='{{ form.image1 }}'></label>
+        <br></br>
+        {{ form.image1 }}
+      </div>
       <div class="input-field">
         {{ form.subject.errors }}
         <label for='{{ form.choice2 }}'> Choice 2: </label>
         <br></br>
         {{ form.choice2 }}
+      </div>
+      <div class="image2" name="image2">
+        {{ form.subject.errors }}
+        <label for='{{ form.image2 }}'></label>
+        <br></br>
+        {{ form.image2 }}
+      </div>
+      <div class="input-field">
+        {{ form.subject.errors }}
+        <label for='{{ form.choice3 }}'> Choice 3: </label>
+        <br></br>
+        {{ form.choice3 }}
+      </div>
+      <div class="image3" name="image3">
+        {{ form.subject.errors }}
+        <label for='{{ form.image3 }}'></label>
+        <br></br>
+        {{ form.image3 }}
+        <br></br>
+        <br></br>
       </div>
       <input type="submit" value="Post"  class='btn'/>
     </form>

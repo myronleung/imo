@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
-from django.db.models import Q
+from django.db.models import Q, F
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -9,6 +9,7 @@ from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm
 from .models import UserProfile, Question, Choice, Comment, Voted
@@ -254,22 +255,31 @@ def results(request, question_id):
     context = {'question':q, 'choices': choices, 'comments': c, 'check_author': check_author}
     return render(request, 'imo_app/results.html', context)
 
-def change_question(request, question_id):
-    question = get_object_or_404(Question, id=question_id)
-    if (request.POST.get('edit')):
-        template = loader.get_template('imo_app/view_newentry.html')
-        form = NewEntryForm(request.POST or None, instance=question)
-        # Display formg
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.save()
-            return HttpResponseRedirect(instance.get_absolute_url())
-        context = {
-            'question': question.id,
-            "title": "Detail",
-            "form": form,
-        }
-        return render(request, "view_newentry.html", context)
-    elif (request.POST.get('delete')):
-        Question.objects.filter(id=question_id).delete()
+def edit(request, id=None):
+    if (request.POST.get('delete')):
+        Question.objects.filter(id=id).delete()
         return HttpResponseRedirect(reverse('imo_app:index'))
+    #since we don't have choice saved in question, set instance.values for form
+    instance = get_object_or_404(Question, id=id)
+    if (request.POST.get('change')):
+        instance_choices = Choice.objects.all().filter(question=instance)
+        instance.choice1 = instance_choices[0]
+        instance.image1 = instance_choices[0].image
+        instance.choice2 = instance_choices[1]
+        instance.image2 = instance_choices[1].image
+        instance.choice3 = instance_choices[2]
+        instance.image3 = instance_choices[2].image
+    #if user clicked delete, delete post
+    #else, create new form
+    form = NewEntryForm(request.POST or None, request.FILES or None, instance=instance)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.user = request.user
+        instance.save()
+        messages.success(request, "Saved")
+        return HttpResponseRedirect(reverse('imo_app:results', args=[instance.id]))
+    context = {
+        "instance": instance,
+        "form": form,
+    }
+    return render(request, "imo_app/change_entry.html", context)
