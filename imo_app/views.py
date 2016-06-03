@@ -243,6 +243,8 @@ def results(request, question_id):
     else:
         check_author = ''
     choices = Choice.objects.filter(question = q)
+    for i in choices:
+        i.percentage = round((i.votes / q.total_votes) * 100, 2)
     context = {'question':q, 'choices': choices, 'comments': c, 'check_author': check_author}
     return render(request, 'imo_app/results.html', context)
 
