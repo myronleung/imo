@@ -8,14 +8,14 @@
       <!-- Questions -->
       <div class="input-field">
         {{ form.question.errors }}
-        <label for='{{ form.question_text }}'> Question: </label>
+        <label for='{{ form.question_text }}'> Question (required): </label>
         <br></br>
         {{ form.question_text }}
       </div>
       <!-- Choices -->
       <div class="input-field">
         {{ form.subject.errors }}
-        <label for='{{ form.description }}'> Description: </label>
+        <label for='{{ form.description }}'> Description (required): </label>
         <br></br>
         {{ form.description }}
       </div>
@@ -54,6 +54,7 @@
         <label for='{{ form.image3 }}'></label>
         <br></br>
         {{ form.image3 }}
+        <br></br>
         <br></br>
       </div>
       <input type="submit" value="Post"  class='btn'/>

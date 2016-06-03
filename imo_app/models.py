@@ -16,13 +16,13 @@ class Question(models.Model):
     question_text = models.CharField(max_length=200)
     description = models.TextField(default = '')
     pub_date = models.DateTimeField('date published')
-    choice1 = models.CharField(default = '', max_length = 200)
+    choice1 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image1 = models.ImageField(null=True, blank=True)
     choice2 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image2 = models.ImageField(null=True, blank=True)
     choice3 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image3 = models.ImageField(null=True, blank=True)
-    total_votes = models.IntegerField(default=0)
+    total_votes = models.IntegerField(default = 1.0)
 
     class Meta:
         ordering = ['-pub_date']

@@ -48,13 +48,16 @@ def detail(request, question_id):
     q = Question.objects.get(id = question_id)
     c = Comment.objects.filter(question=q)
     v = Voted.objects.filter(voter=u, question = q)
+    author = q.author.user.username
+    if (current_user.username == author):
+        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
     if v:
         return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     else:
-        return render(request, 'imo_app/detail.html', {'question':q, 'comments':c,})
+        return render(request, 'imo_app/detail.html', {'question':q, 'comments':c, 'is_author':is_author})
 
 def view_registration(request):
     template = loader.get_template('imo_app/view_registration.html')
@@ -167,7 +170,10 @@ def submit_newentry(request, id=None):
             c2.save()
             c3 = Choice(question = q, choice_text = choice3, image = image3)
             c3.save()
-
+            author_name = q.author.user.username
+            if (author_name == current_user.username):
+                q.total_votes += 1
+                return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('imo_app:detail', args=[q.id]))
 

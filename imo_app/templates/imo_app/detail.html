@@ -10,18 +10,18 @@
   <form action="{% url 'imo_app:submit_vote' question.id %}" method="post">
     {% csrf_token %}
     {% for choice in question.choice_set.all %}
-        {% if choice.choice_text != '' %}
+        {% if choice.choice_text or choice.image != ''%}
         <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}" />
         {% endif %}
         <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
         {% if choice.image != '' %}
         <img src='{{ choice.image.url }}' class='img-responsive' width="250px" height="250px" /> <br />
         {% endif %}
+        <br></br>
     {% endfor %}
-
-    <img src='{{ choice.image1.url }}' class='img-responsive' />
     <br></br>
   <input class='btn' type="submit" value="Vote" />
+
   </form>
   <br></br>
   <br></br>
