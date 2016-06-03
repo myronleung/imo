@@ -57,7 +57,7 @@ def detail(request, question_id):
     if v:
         return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     else:
-        return render(request, 'imo_app/detail.html', {'question':q, 'comments':c, 'is_author':is_author})
+        return render(request, 'imo_app/detail.html', {'question':q, 'comments':c})
 
 def view_registration(request):
     template = loader.get_template('imo_app/view_registration.html')
