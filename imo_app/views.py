@@ -263,44 +263,55 @@ def edit(request, id=None):
     #if user clicked delete, delete post
     #else, create new form
     instance = Question.objects.get(id=id)
+    old_choices = Choice.objects.all().filter(question=instance)
     author = instance.author
     current_user = request.user
     if author.user.username == current_user.username:
         if (request.POST.get('edit')):
-            instance_choices = Choice.objects.all().filter(question=instance)
-            instance.choice1 = instance_choices[0]
-            instance.image1 = instance_choices[0].image
-            instance.choice2 = instance_choices[1]
-            instance.image2 = instance_choices[1].image
-            instance.choice3 = instance_choices[2]
-            instance.image3 = instance_choices[2].image
+            instance.choice1 = old_choices[0]
+            instance.image1 = old_choices[0].image
+            instance.choice2 = old_choices[1]
+            instance.image2 = old_choices[1].image
+            instance.choice3 = old_choices[2]
+            instance.image3 = old_choices[2].image
             form = NewEntryForm(instance=instance)
         elif request.method == 'POST':
             form = NewEntryForm(request.POST or None, request.FILES or None, instance=instance)
             if form.is_valid():
                 # process the data in form.cleaned_data as required
                 instance = form.save(commit=False)
-                old_choices = Choice.objects.all().filter(question=instance)
-                old_image1 = old_choices[0].image
-                old_image2 = old_choices[1].image
-                old_image3 = old_choices[2].image
+                instance.save()
+                #collect all the old images
+                image1 = old_choices[0].image
+                image2 = old_choices[1].image
+                image3 = old_choices[2].image
+                #gather the new choices as the choises
                 choice1 = instance.choice1
                 choice2 = instance.choice2
                 choice3 = instance.choice3
-                if instance.image1 == old_image1:
+                #gather all the images from form
+                new_image1 = instance.image1
+                new_image2 = instance.image2
+                new_image3 = instance.image3
+                #if the instance is the old image, just use old image
+                #first image
+                if image1 == new_image1:
                     image1 = old_image1
                 else:
-                    image1 = instance.image1
-                if instance.image2 == old_image2:
+                    image1 = new_image1
+                #second image
+                if image2 == new_image2:
                     image2 = old_image2
                 else:
-                    image2 = instance.image2
-                if instance.image3 == old_image3:
+                    image2 = new_image2
+                #third image
+                if image3 == new_image3:
                     image3 = old_image3
                 else:
-                    image3 = instance.image3
-                instance.save()
+                    image3 = new_image3
+                #delete the old choices so we can add the new ones
                 Choice.objects.filter(question=instance).delete()
+                #add the new choices
                 c1 = Choice(question = instance, choice_text = choice1, image = image1)
                 c1.save()
                 c2 = Choice(question = instance, choice_text = choice2, image = image2)
