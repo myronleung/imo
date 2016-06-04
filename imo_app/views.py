@@ -280,7 +280,33 @@ def edit(request, id=None):
             if form.is_valid():
                 # process the data in form.cleaned_data as required
                 instance = form.save(commit=False)
+                old_choices = Choice.objects.all().filter(question=instance)
+                old_image1 = old_choices[0].image
+                old_image2 = old_choices[1].image
+                old_image3 = old_choices[2].image
+                choice1 = instance.choice1
+                choice2 = instance.choice2
+                choice3 = instance.choice3
+                if instance.image1 == old_image1:
+                    image1 = old_image1
+                else:
+                    image1 = instance.image1
+                if instance.image2 == old_image2:
+                    image2 = old_image2
+                else:
+                    image2 = instance.image2
+                if instance.image3 == old_image3:
+                    image3 = old_image3
+                else:
+                    image3 = instance.image3
                 instance.save()
+                Choice.objects.filter(question=instance).delete()
+                c1 = Choice(question = instance, choice_text = choice1, image = image1)
+                c1.save()
+                c2 = Choice(question = instance, choice_text = choice2, image = image2)
+                c2.save()
+                c3 = Choice(question = instance, choice_text = choice3, image = image3)
+                c3.save()
                 return HttpResponseRedirect(reverse('imo_app:results', args=[instance.id]))
         context = {
             "instance": instance,
