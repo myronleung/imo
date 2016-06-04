@@ -22,7 +22,7 @@ class Question(models.Model):
     image2 = models.ImageField(null=True, blank=True)
     choice3 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image3 = models.ImageField(null=True, blank=True)
-    total_votes = models.IntegerField(default = 1.0)
+    total_votes = models.FloatField(default = 0.5)
 
     class Meta:
         ordering = ['-pub_date']

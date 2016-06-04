@@ -58,7 +58,7 @@ def detail(request, question_id):
     if v:
         return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     else:
-        return render(request, 'imo_app/detail.html', {'question':q, 'comments':c, 'is_author':is_author})
+        return render(request, 'imo_app/detail.html', {'question':q, 'comments':c})
 
 def view_registration(request):
     template = loader.get_template('imo_app/view_registration.html')
@@ -173,7 +173,7 @@ def submit_newentry(request, id=None):
             c3.save()
             author_name = q.author.user.username
             if (author_name == current_user.username):
-                q.total_votes += 1
+                q.total_votes += .5
                 return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('imo_app:detail', args=[q.id]))
@@ -204,7 +204,10 @@ def submit_vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        question.total_votes += 1
+        if question.total_votes < 1:
+            question.total_votes = 1
+        else:
+            question.total_votes += 1
         question.save()
         selected_choice.percentage = round((selected_choice.votes / question.total_votes) * 100.0,2)
         selected_choice.save()
@@ -352,9 +355,9 @@ def edit(request, id=None):
                 #delete the old choices so we can add the new ones
                 Choice.objects.filter(question=instance).delete()
                 #add the new choices
-                c1 = Choice(question = instance, choice_text = choice1, image = image1, votes = vote1)
-                c2 = Choice(question = instance, choice_text = choice2, image = image2, votes = vote2)
-                c3 = Choice(question = instance, choice_text = choice3, image = image3, votes = vote3)
+                c1 = Choice(question = instance, choice_text = choice1, image = image1, votes = votes1)
+                c2 = Choice(question = instance, choice_text = choice2, image = image2, votes = votes2)
+                c3 = Choice(question = instance, choice_text = choice3, image = image3, votes = votes3)
                 c1.save()
                 c2.save()
                 c3.save()
