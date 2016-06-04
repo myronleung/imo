@@ -297,31 +297,61 @@ def edit(request, id=None):
                 #first image
                 if new_image1 == '':
                     image1 = image1
+                    #send number in old votes to votes
+                    votes1 = old_choices[0].votes
                 else:
                     image1 = new_image1
+                    votes1 = 0
+                    #if new image, remove votes for question from total votes
+                    instance.total_votes = instance.total_votes - old_choices[0].votes
                 #if the clear box is checked, this will remove image
                 if request.POST.get('image1-clear'):
                     image1 = ''
+                    votes1 = 0
+                    #if you clear, and if new_image is empty, remove from total.
+                    #if you don't, it will be double counted
+                    if new_image1 == '':
+                        instance.total_votes = instance.total_votes - old_choices[0].votes
+
                 #second image
                 if new_image2 == '':
                     image2 = image2
+                    votes2 = old_choices[1].votes
                 else:
                     image2 = new_image2
+                    votes2 = 0
+                    #if new image, remove votes for question from total votes
+                    instance.total_votes = instance.total_votes - old_choices[1].votes
                 if request.POST.get('image2-clear'):
                     image2 = ''
+                    votes2 = 0
+                    #if you clear, and if new_image is empty, remove from total.
+                    #if you don't, it will be double counted
+                    if new_image1 == '':
+                        instance.total_votes = instance.total_votes - old_choices[1].votes
+
                 #third image
                 if new_image3 == '':
                     image3 = image3
+                    votes3 = old_choices[2].votes
                 else:
                     image3 = new_image3
+                    votes3 = 0
+                    #if new image, remove votes for question from total votes
+                    instance.total_votes = instance.total_votes - old_choices[2].votes
                 if request.POST.get('image3-clear'):
                     image3 = ''
+                    votes3 = 0
+                    #if you clear, and if new_image is empty, remove from total.
+                    #if you don't, it will be double counted
+                    if new_image1 == '':
+                        instance.total_votes = instance.total_votes - old_choices[2].votes
                 #delete the old choices so we can add the new ones
                 Choice.objects.filter(question=instance).delete()
                 #add the new choices
-                c1 = Choice(question = instance, choice_text = choice1, image = image1)
-                c2 = Choice(question = instance, choice_text = choice2, image = image2)
-                c3 = Choice(question = instance, choice_text = choice3, image = image3)
+                c1 = Choice(question = instance, choice_text = choice1, image = image1, votes = votes1)
+                c2 = Choice(question = instance, choice_text = choice2, image = image2, votes = votes2)
+                c3 = Choice(question = instance, choice_text = choice3, image = image3, votes = votes3)
                 c1.save()
                 c2.save()
                 c3.save()
