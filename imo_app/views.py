@@ -295,28 +295,28 @@ def edit(request, id=None):
                 new_image3 = instance.image3
                 #if the instance is the old image, just use old image
                 #first image
-                if image1 == new_image1:
-                    image1 = old_image1
+                if new_image1 == '':
+                    image1 = image1
                 else:
                     image1 = new_image1
                 #second image
-                if image2 == new_image2:
-                    image2 = old_image2
+                if new_image2 == '':
+                    image2 = image2
                 else:
                     image2 = new_image2
                 #third image
-                if image3 == new_image3:
-                    image3 = old_image3
+                if new_image3 == '':
+                    image3 = image3
                 else:
                     image3 = new_image3
                 #delete the old choices so we can add the new ones
                 Choice.objects.filter(question=instance).delete()
                 #add the new choices
                 c1 = Choice(question = instance, choice_text = choice1, image = image1)
-                c1.save()
                 c2 = Choice(question = instance, choice_text = choice2, image = image2)
-                c2.save()
                 c3 = Choice(question = instance, choice_text = choice3, image = image3)
+                c1.save()
+                c2.save()
                 c3.save()
                 return HttpResponseRedirect(reverse('imo_app:results', args=[instance.id]))
         context = {
