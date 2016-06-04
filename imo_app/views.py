@@ -260,26 +260,32 @@ def edit(request, id=None):
         Question.objects.filter(id=id).delete()
         return HttpResponseRedirect(reverse('imo_app:index'))
     #since we don't have choice saved in question, set instance.values for form
-    instance = get_object_or_404(Question, id=id)
-    if (request.POST.get('change')):
-        instance_choices = Choice.objects.all().filter(question=instance)
-        instance.choice1 = instance_choices[0]
-        instance.image1 = instance_choices[0].image
-        instance.choice2 = instance_choices[1]
-        instance.image2 = instance_choices[1].image
-        instance.choice3 = instance_choices[2]
-        instance.image3 = instance_choices[2].image
     #if user clicked delete, delete post
     #else, create new form
-    form = NewEntryForm(request.POST or None, request.FILES or None, instance=instance)
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.user = request.user
-        instance.save()
-        messages.success(request, "Saved")
-        return HttpResponseRedirect(reverse('imo_app:results', args=[instance.id]))
-    context = {
-        "instance": instance,
-        "form": form,
-    }
-    return render(request, "imo_app/change_entry.html", context)
+    instance = Question.objects.get(id=id)
+    author = instance.author
+    current_user = request.user
+    if author.user.username == current_user.username:
+        if (request.POST.get('edit')):
+            instance_choices = Choice.objects.all().filter(question=instance)
+            instance.choice1 = instance_choices[0]
+            instance.image1 = instance_choices[0].image
+            instance.choice2 = instance_choices[1]
+            instance.image2 = instance_choices[1].image
+            instance.choice3 = instance_choices[2]
+            instance.image3 = instance_choices[2].image
+            form = NewEntryForm(instance=instance)
+        elif request.method == 'POST':
+            form = NewEntryForm(request.POST or None, request.FILES or None, instance=instance)
+            if form.is_valid():
+                # process the data in form.cleaned_data as required
+                instance = form.save(commit=False)
+                instance.save()
+                return HttpResponseRedirect(reverse('imo_app:results', args=[instance.id]))
+        context = {
+            "instance": instance,
+            "form": form,
+        }
+        return render(request, "imo_app/change_entry.html", context)
+    elif author != current_user:
+        raise Http404
