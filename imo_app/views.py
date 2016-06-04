@@ -299,16 +299,23 @@ def edit(request, id=None):
                     image1 = image1
                 else:
                     image1 = new_image1
+                #if the clear box is checked, this will remove image
+                if request.POST.get('image1-clear'):
+                    image1 = ''
                 #second image
                 if new_image2 == '':
                     image2 = image2
                 else:
                     image2 = new_image2
+                if request.POST.get('image2-clear'):
+                    image2 = ''
                 #third image
                 if new_image3 == '':
                     image3 = image3
                 else:
                     image3 = new_image3
+                if request.POST.get('image3-clear'):
+                    image3 = ''
                 #delete the old choices so we can add the new ones
                 Choice.objects.filter(question=instance).delete()
                 #add the new choices
