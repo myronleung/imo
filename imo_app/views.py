@@ -293,65 +293,68 @@ def edit(request, id=None):
                 new_image1 = instance.image1
                 new_image2 = instance.image2
                 new_image3 = instance.image3
+
+                #update images
                 #if the instance is the old image, just use old image
                 #first image
                 if new_image1 == '':
                     image1 = image1
-                    #send number in old votes to votes
-                    votes1 = old_choices[0].votes
                 else:
                     image1 = new_image1
-                    votes1 = 0
-                    #if new image, remove votes for question from total votes
-                    instance.total_votes = instance.total_votes - old_choices[0].votes
                 #if the clear box is checked, this will remove image
                 if request.POST.get('image1-clear'):
                     image1 = ''
-                    votes1 = 0
-                    #if you clear, and if new_image is empty, remove from total.
-                    #if you don't, it will be double counted
-                    if new_image1 == '':
-                        instance.total_votes = instance.total_votes - old_choices[0].votes
-
                 #second image
                 if new_image2 == '':
                     image2 = image2
-                    votes2 = old_choices[1].votes
                 else:
                     image2 = new_image2
-                    votes2 = 0
-                    #if new image, remove votes for question from total votes
-                    instance.total_votes = instance.total_votes - old_choices[1].votes
                 if request.POST.get('image2-clear'):
                     image2 = ''
-                    votes2 = 0
-                    #if you clear, and if new_image is empty, remove from total.
-                    #if you don't, it will be double counted
-                    if new_image1 == '':
-                        instance.total_votes = instance.total_votes - old_choices[1].votes
-
                 #third image
                 if new_image3 == '':
                     image3 = image3
-                    votes3 = old_choices[2].votes
                 else:
                     image3 = new_image3
-                    votes3 = 0
-                    #if new image, remove votes for question from total votes
-                    instance.total_votes = instance.total_votes - old_choices[2].votes
                 if request.POST.get('image3-clear'):
                     image3 = ''
+
+                #update votes
+                #if any change in the choice
+                if choice1 != old_choices[0] or image1 != old_choices[0].image or request.POST.get('image1-clear'):
+                    #remove the votes for that choice from total votes
+                    instance.total_votes = instance.total_votes - old_choices[0].votes
+                    #set total votes to 0
+                    votes1 = 0
+                #else leave it the same
+                else:
+                    votes1 = old_choice[0].votes
+
+                #choice2
+                if choice2 != old_choices[1] or image2 != old_choices[1].image or request.POST.get('image2-clear'):
+                    #remove the votes for that choice from total votes
+                    instance.total_votes = instance.total_votes - old_choices[1].votes
+                    #set total votes to 0
+                    votes2 = 0
+                #else leave it the same
+                else:
+                    votes2 = old_choice[1].votes
+
+                #choice3
+                if choice3 != old_choices[2] or image3 != old_choices[2].image or request.POST.get('image3-clear'):
+                    #remove the votes for that choice from total votes
+                    instance.total_votes = instance.total_votes - old_choices[2].votes
+                    #set total votes to 0
                     votes3 = 0
-                    #if you clear, and if new_image is empty, remove from total.
-                    #if you don't, it will be double counted
-                    if new_image1 == '':
-                        instance.total_votes = instance.total_votes - old_choices[2].votes
+                #else leave it the same
+                else:
+                    votes3 = old_choice[2].votes
                 #delete the old choices so we can add the new ones
                 Choice.objects.filter(question=instance).delete()
                 #add the new choices
-                c1 = Choice(question = instance, choice_text = choice1, image = image1, votes = votes1)
-                c2 = Choice(question = instance, choice_text = choice2, image = image2, votes = votes2)
-                c3 = Choice(question = instance, choice_text = choice3, image = image3, votes = votes3)
+                c1 = Choice(question = instance, choice_text = choice1, image = image1, votes = vote1)
+                c2 = Choice(question = instance, choice_text = choice2, image = image2, votes = vote2)
+                c3 = Choice(question = instance, choice_text = choice3, image = image3, votes = vote3)
                 c1.save()
                 c2.save()
                 c3.save()
