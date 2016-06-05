@@ -1,0 +1,31 @@
+{% extends 'imo_app/base.html' %}
+
+{% block content %}
+<h4>Sign Up<h4>
+  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+  <form class="" action="{% url 'imo_app:submit_registration'%}" method="post">
+    {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="fieldWrapper">
+        {{ form.first_name.errors }}
+        <label for='{{ form.first_name }}'> First Name: </label>
+        {{ form.first_name }}
+      </div>
+      <div class="fieldWrapper">
+        {{ form.last_name.errors }}
+        <label for='{{ form.last_name }}'> Last Name: </label>
+        {{ form.last_name }}
+      </div>
+      <div class="fieldWrapper">
+        {{ form.email.errors }}
+        <label for='{{ form.email }}'> Email: </label>
+        {{ form.email }}
+      </div>
+      <div class="fieldWrapper">
+        {{ form.subject.errors }}
+        <label for='{{ form.password }}'> Password </label>
+        {{ form.password }}
+      </div>
+    <input type="submit" value="Register" class='btn' />
+  </form>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'imo_app/base.html' %}
+
+{% block content %}
+  <h3>Create New Poll</h3>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    <form class="" action="{% url 'imo_app:submit_newentry'%}" enctype = 'multipart/form-data' method="post">
+      {% csrf_token %}
+      <!-- Questions -->
+      <div class="input-field">
+        {{ form.question.errors }}
+        <label for='{{ form.name }}'> Name: </label>
+        <br></br>
+        {{ form.name }}
+      </div>
+      <!-- Choices -->
+      <div class="image1" name="image1">
+        {{ form.subject.errors }}
+        <label for='{{ form.picture }}'> Profile picture: </label>
+        <br></br>
+        {{ form.picture }}
+      </div>
+      <div class="input-field">
+        {{ form.subject.errors }}
+        <label for='{{ form.birthday }}'> Birthday: </label>
+        <br></br>
+        {{ form.birthday }}
+      </div>
+      <div class="input-field">
+        {{ form.subject.errors }}
+        <label for='{{ form.gender }}'> Gender: </label>
+        <br></br>
+        {{ form.gender }}
+      </div>
+      <div class="input-field">
+        {{ form.subject.errors }}
+        <label for='{{ form.interests }}'> Interests: </label>
+        <br></br>
+        {{ form.interests }}
+      </div>
+        <br></br>
+        <br></br>
+      </div>
+      <input type="submit" value="Post"  class='btn'/>
+    </form>
+{% endblock %}

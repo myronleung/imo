@@ -61,6 +61,10 @@ def detail(request, question_id):
         return render(request, 'imo_app/detail.html', {'question':q, 'comments':c})
 
 def view_registration(request):
+    user = request.user
+    if user is not None:
+        if user.is_active:
+            return HttpResponseRedirect(reverse('imo_app:index'))
     template = loader.get_template('imo_app/view_registration.html')
     # Display formform = LoginForm()
     form = RegistrationForm()
