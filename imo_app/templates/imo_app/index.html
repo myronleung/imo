@@ -23,7 +23,7 @@
       </div>
 
         {% for i in q_all %}
-          <div class="col m4">
+          <div class="col m12"> <!-- change to "col m4" for 3 per page -->
             <div class="card" >
               <div class="card-content">
                 <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}">{{ i.question_text }}</a></span>
@@ -33,8 +33,20 @@
                 </div>
                 <br></br>
                 <p class="truncate">{{ i.description }}</p>
-                <br></br>
                 <p class="grey-text">{{ i.pub_date }}</p>
+                <!-- This is the optional pictures addition to cards -->
+                <ul>
+                <li>
+                {% for choice in i.choice_set.all %}
+                    <div class="col schoice"><id = 'choice_index'>
+                    {% if choice.image != '' %}
+                    <img src='{{ choice.image.url }}' class='img-responsive' width="250px" height="250px" /> <br />
+                    {% endif %}
+                    <br></br>
+                  </div>
+                {% endfor %}
+                </li>
+                </ul>
               </div>
               <a href="{% url 'imo_app:detail' i.id %}"><div class="orange-text waves-effect waves-teal card-action btn-flat" style="width:100%; height: 100%">
               {% if i.total_votes < 1 %}
