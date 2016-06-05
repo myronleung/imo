@@ -76,3 +76,7 @@ pydoc () {
 if [ -n "${BASH-}" ] || [ -n "${ZSH_VERSION-}" ] ; then
     hash -r 2>/dev/null
 fi
+
+export DATABASE_NAME='taskbuster_db'
+export DATABASE_USER='myusername'
+export DATABASE_PASSWORD='mypassword'
