@@ -13,17 +13,16 @@
   <body>
 
     <nav>
-      <div class="navbar-fixed" style="background-color: #66CCCC">
-      <div class="right hide-on-med-and-down">
+      <div class="nav-wrapper" style="background-color: #66CCCC">
+      <ul class="right hide-on-med-and-down">
         {% if user.is_authenticated %}
-          Welcome, {{ user.first_name }} {{user.last_name}}
-          <a href = "{% url 'imo_app:user_logout' %}">Log Out</a>
+          <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
+          <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
         {% else %}
-            <a href = "{% url 'imo_app:view_registration' %}" style='width:100px'>Register</a>
-            <a href = "{% url 'imo_app:view_login' %}" style='width:100px'>Login</a>
-          </div>
+            <li><a href = "{% url 'imo_app:view_registration' %}" style='width:100px'>Register</a></li>
+            <li><a href = "{% url 'imo_app:view_login' %}" style='width:100px'>Login</a></li>
+          </ul>
         {% endif %}
-      </div>
       </div>
     </nav>
     <nav>
