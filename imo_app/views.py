@@ -138,11 +138,14 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('imo_app:index'))
 
 def view_newentry(request):
-    template = loader.get_template('imo_app/view_newentry.html')
-    # Display formg
-    form = NewEntryForm()
-    return render(request, 'imo_app/view_newentry.html', {'form': form})
-
+    user = request.user
+    if user.is_authenticated():
+        template = loader.get_template('imo_app/view_newentry.html')
+        # Display formg
+        form = NewEntryForm()
+        return render(request, 'imo_app/view_newentry.html', {'form': form})
+    else:
+        raise Http404
 def submit_newentry(request, id=None):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
