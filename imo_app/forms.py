@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Question
+from .models import Question, UserProfile
 
 
 class RegistrationForm(forms.Form):
@@ -25,6 +25,17 @@ class NewEntryForm(forms.ModelForm):
             "image2",
             "choice3",
             "image3"
+        ]
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = [
+            "gender",
+            "picture",
+            "birthday",
+            "about",
+            "motto",
         ]
 
 class VoteForm(forms.Form):

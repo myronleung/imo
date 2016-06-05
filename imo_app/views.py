@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate
 
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm
+from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm
 from .models import UserProfile, Question, Choice, Comment, Voted
 
 from django.utils import timezone
@@ -396,3 +396,34 @@ def your_posts(request):
         return render(request, 'imo_app/your_posts.html', context)
     else:
         raise Http404
+
+def profile(request):
+    current_user=request.user
+    #if trying to edit
+    if request.method == 'POST':
+        asdf
+    #if not trying to edit
+    author = UserProfile.objects.get(id=current_user.id)
+    q_list = Question.objects.filter(author=author)
+    paginator = Paginator(q_list, 12) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
+    context = {
+        'q_all': q,
+        'current_user': current_user,
+        'first_name': author.user.first_name,
+        'last_name': author.user.last_name,
+        'gender': author.gender,
+        'birthday': author.birthday,
+        'about': author.about,
+        'email': author.user.email,
+        'motto': author.motto
+    }
+    return render(request, 'imo_app/profile.html', context)

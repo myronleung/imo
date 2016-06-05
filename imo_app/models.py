@@ -10,6 +10,8 @@ class UserProfile(models.Model):
     gender = models.CharField(default='', blank=True, max_length=15)
     picture = models.ImageField(blank=True, null=True, upload_to='')
     birthday = models.DateField(blank=True, null=True)
+    about = models.TextField(default='')
+    motto = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return self.user.username
