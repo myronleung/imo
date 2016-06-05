@@ -372,3 +372,20 @@ def edit(request, id=None):
         return render(request, "imo_app/change_entry.html", context)
     elif author != current_user:
         raise Http404
+
+def your_posts(request):
+    current_user = request.user
+    author = UserProfile.objects.get(id=current_user.id)
+    q_list = Question.objects.filter(author=author)
+    paginator = Paginator(q_list, 12) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
+    context = {'q_all': q, 'current_user': current_user}
+    return render(request, 'imo_app/your_posts.html', context)

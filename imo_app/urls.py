@@ -5,6 +5,7 @@ from . import views
 app_name = 'imo_app'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^your_posts/$', views.your_posts, name = 'your_posts'),
     url(r'^(?P<question_id>[0-9]+)/$', views.detail, name = 'detail'),
     url(r'^view_registration/$', views.view_registration, name='view_registration'),
     url(r'^submit_registration/$', views.submit_registration, name='submit_registration'),
@@ -19,4 +20,5 @@ urlpatterns = [
     url(r'^(?P<question_id>[0-9]+)/add_comment/$', views.add_comment, name = 'add_comment'),
     url(r'^about/$', views.about, name = 'about'),
     url(r'^faq/$', views.faq, name = 'faq'),
+
 ]

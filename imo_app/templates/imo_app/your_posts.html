@@ -1,0 +1,80 @@
+{% extends "imo_app/base.html" %}
+
+{% block content %}
+  <div class="row">
+    <div class="col m12">
+      <p>Welcome to IMO!  The new way to get or give an opinion on a variety of topics.</p>
+      <p>Want to request opinions on some products you are thinking of buying, or decisions you have to make?
+        Click the “create new topic” and specify your question parameters.  Choose whether to ask a private group,
+        friends, or the general public!</p>
+      <p>For all future questions be sure to check out our <a href="faq/">FAQ</a> guide in the settings tab.</p>
+    </div>
+
+  </div>
+    {% if user.is_authenticated %}
+      <h4>Your Posts</h4>
+      <div class="row">
+        <div class="col m12">
+        <form method='GET' action=''>
+        <input type='text' name='q' placeholder='Search posts' value='{{ request.GET.q }}' />
+        <input type='submit' value='Search' />
+        </form>
+        <br></br>
+      </div>
+
+        {% for i in q_all %}
+          <div class="col m4">
+            <div class="card" >
+              <div class="card-content">
+                <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}">{{ i.question_text }}</a></span>
+                <hr></hr>
+                <div class="chip">
+                  {{ i.author.user.first_name}} {{ i.author.user.last_name}}
+                </div>
+                <br></br>
+                <p class="truncate">{{ i.description }}</p>
+                <br></br>
+                <p class="grey-text">{{ i.pub_date }}</p>
+              </div>
+              <a href="{% url 'imo_app:detail' i.id %}"><div class="orange-text waves-effect waves-teal card-action btn-flat" style="width:100%; height: 100%">
+              {% if i.total_votes < 1 %}
+              Votes: 0
+              {% else %}
+              Votes: {{ i.total_votes }}
+              {% endif %}
+              </div></a>
+
+            </div>
+          </div>
+        {% endfor %}
+        <!-- this is the pagination that allows us to have multiple pages -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if q_all.has_previous %}
+                    <a href="?page={{ q_all.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ q_all.number }} of {{ q_all.paginator.num_pages }}.
+                </span>
+
+                {% if q_all.has_next %}
+                    <a href="?page={{ q_all.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+                {% endif %}
+            </span>
+        </div>
+      </div>
+
+    {% else %}
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    {% endif %}
+
+{% endblock content %}
