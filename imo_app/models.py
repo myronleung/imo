@@ -7,6 +7,9 @@ from django.contrib.auth.models import User
 # Create your models here.
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
+    gender = models.CharField(default='', blank=True, max_length=15)
+    picture = models.ImageField(blank=True, null=True, upload_to='')
+    birthday = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.user.username
