@@ -155,6 +155,7 @@ def submit_newentry(request, id=None):
             current_user = request.user
             question_text = form.cleaned_data['question_text']
             author =  UserProfile.objects.get(id=current_user.id)
+            author_name = author.user.first_name + author.user.last_name
             description = form.cleaned_data['description']
             pub_date = timezone.now()
             choice1 = form.cleaned_data['choice1']
@@ -163,7 +164,7 @@ def submit_newentry(request, id=None):
             image1 = instance.image1
             image2 = instance.image2
             image3 = instance.image3
-            q = Question(question_text = question_text, author = author, description = description, pub_date = pub_date, choice1 = choice1, choice2 = choice2, choice3 = choice3, image1 = image1, image2 = image2, image3 = image3)
+            q = Question(question_text = question_text, author = author, author_name = author_name, description = description, pub_date = pub_date, choice1 = choice1, choice2 = choice2, choice3 = choice3, image1 = image1, image2 = image2, image3 = image3)
             q.save()
             c1 = Choice(question = q, choice_text = choice1, image = image1)
             c1.save()
@@ -472,9 +473,12 @@ def profile(request):
 
 def search_bars(q_list, query):
     if query:
+        choices = 'do not have this string'
         choice = Choice.objects.filter(choice_text = query)
-        choices = Choice.objects.get(id = choice)
+        if choice:
+            choices = Choice.objects.get(id = choice)
         q_list = q_list.filter(
+            Q(author_name__icontains=query)|
             Q(question_text__icontains=query)|
             Q(description__icontains=query)|
             Q(choice1__icontains=choices)|

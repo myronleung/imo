@@ -18,6 +18,7 @@ class UserProfile(models.Model):
 
 class Question(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    author_name = models.CharField(max_length=200, default='')
     question_text = models.CharField(max_length=200)
     description = models.TextField(default = '')
     pub_date = models.DateTimeField('date published')
