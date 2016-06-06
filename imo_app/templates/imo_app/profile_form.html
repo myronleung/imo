@@ -1,17 +1,11 @@
 {% extends 'imo_app/base.html' %}
 
 {% block content %}
-  <h3>Create New Poll</h3>
+  <h3>Edit Profile</h3>
     {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    <form class="" action="{% url 'imo_app:submit_newentry'%}" enctype = 'multipart/form-data' method="post">
+    <form class="" action="{% url 'imo_app:profile'%}" enctype = 'multipart/form-data' method="post">
       {% csrf_token %}
       <!-- Questions -->
-      <div class="input-field">
-        {{ form.question.errors }}
-        <label for='{{ form.name }}'> Name: </label>
-        <br></br>
-        {{ form.name }}
-      </div>
       <!-- Choices -->
       <div class="image1" name="image1">
         {{ form.subject.errors }}
@@ -33,9 +27,14 @@
       </div>
       <div class="input-field">
         {{ form.subject.errors }}
-        <label for='{{ form.interests }}'> Interests: </label>
+        <label for='{{ form.about }}'> About: </label>
         <br></br>
-        {{ form.interests }}
+        {{ form.about }}
+      <div class="input-field">
+        {{ form.subject.errors }}
+        <label for='{{ form.motto }}'> Motto: </label>
+        <br></br>
+        {{ form.motto }}
       </div>
         <br></br>
         <br></br>

@@ -399,13 +399,60 @@ def your_posts(request):
 
 def profile(request):
     current_user=request.user
+    instance = UserProfile.objects.get(id=current_user.id)
     #if trying to edit
-    if request.method == 'POST':
-        asdf
-    #if not trying to edit
+    if (request.POST.get('edit')):
+        form = ProfileForm(instance=instance)
+        return render(request, 'imo_app/profile_form.html', {'form': form})
+    elif request.method == 'POST':
+        form = ProfileForm(request.POST or None, request.FILES or None, instance=instance)
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            instance = form.save(commit=False)
+            current_user=request.user
+            instance.save()
+            author = UserProfile.objects.get(id=current_user.id)
+            q_list = Question.objects.filter(author=author)
+            paginator = Paginator(q_list, 12) # Show 25 contacts per page
+            page = request.GET.get('page')
+            try:
+                q = paginator.page(page)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                q = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                q = paginator.page(paginator.num_pages)
+            context = {
+                'q_all': q,
+                'current_user': current_user,
+                'first_name': author.user.first_name,
+                'last_name': author.user.last_name,
+                'gender': author.gender,
+                'birthday': author.birthday,
+                'about': author.about,
+                'email': author.user.email,
+                'motto': author.motto,
+                'picture': author.picture,
+            }
+            return render(request, 'imo_app/profile.html', context)
+        context = {
+            "instance": instance,
+            "form": form,
+        }
+        return render(request, 'imo_app/profile_form.html', context)
     author = UserProfile.objects.get(id=current_user.id)
     q_list = Question.objects.filter(author=author)
-    paginator = Paginator(q_list, 12) # Show 25 contacts per page
+    query = request.GET.get("q")
+    if query:
+        q_list = q_list.filter(
+            Q(question_text__icontains=query)|
+            Q(description__icontains=query)|
+            Q(choice1__icontains=query)|
+            Q(choice2__icontains=query)|
+            Q(choice3__icontains=query)
+            ).distinct()
+    paginator = Paginator(q_list, 10) # Show 25 contacts per page
     page = request.GET.get('page')
     try:
         q = paginator.page(page)
@@ -424,6 +471,7 @@ def profile(request):
         'birthday': author.birthday,
         'about': author.about,
         'email': author.user.email,
-        'motto': author.motto
+        'motto': author.motto,
+        'picture': author.picture,
     }
     return render(request, 'imo_app/profile.html', context)

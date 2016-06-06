@@ -9,30 +9,36 @@
     <div class="container">
     <div class="row">
     <div class="col s5">
-      <h4>First name: {{ first_name }}</h4>
-      <br></br>
-      <br></br>
-      <h3>Last name: {{ last_name }}</h3>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <h1>BRIEF DEMONSTRATION OF WHAT I MEAN!!!! </h1>
+        <h4>{{ first_name }} {{ last_name }}</h4>
+        <img src='{{ picture.url }}' class='img-responsive' width="250px" height="250px" />
+        <br></br>
+        <strong>Motto:</strong> "{{ motto }}"
+        <br></br>
+        <strong>About:</strong> {{ about }}
+        <br></br>
+        <strong>Birthday:</strong> {{ birthday }}
+        <br></br>
+        <strong>Gender:</strong> {{ gender }}
+        <br></br>
+    <form action="{% url 'imo_app:profile' %}" method="POST">
+      {% csrf_token %}
+      <input type="submit" value="edit" name='edit' class='btn' size=50%; />
+    </form>
     </div>
-    <div class="col s7 ">
+    <div class="col s7">
     {% if user.is_authenticated %}
       <h4>{{ first_name }}'s posts</h4>
       <div class="row">
-        <div class="col m9">
+        <div class="col m12">
         <form method='GET' action=''>
         <input type='text' name='q' placeholder='Search posts' value='{{ request.GET.q }}' />
         <input type='submit' value='Search' />
         </form>
         <br></br>
       </div>
-      
+
         {% for i in q_all %}
-          <div class="col m9">
+          <div class="col m12">
             <div class="card" >
               <div class="card-content">
                 <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}">{{ i.question_text }}</a></span>
@@ -56,7 +62,6 @@
           </div>
         {% endfor %}
         <!-- this is the pagination that allows us to have multiple pages -->
-        <div class="row">
         <div class="pagination">
             <span class="step-links">
                 {% if q_all.has_previous %}
@@ -73,9 +78,9 @@
             </span>
         </div>
       </div>
-      </div>
     </div>
   </div>
+
     {% else %}
     <br></br>
     <br></br>
@@ -87,5 +92,5 @@
     <br></br>
     <br></br>
     {% endif %}
-
+</div>
 {% endblock content %}
