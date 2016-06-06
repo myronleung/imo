@@ -23,7 +23,7 @@
       </div>
 
         {% for i in q_all %}
-          <div class="col m4"> <!-- change to "col m4" for 3 per page -->
+          <div class="col m6"> <!-- change to "col m4" for 3 per page -->
             <div class="card" >
               <div class="card-content">
                 <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}" style = "font-size: 20px">{{ i.question_text }}</a></span>
@@ -41,11 +41,7 @@
                 </ul>
               </div>
               <a href="{% url 'imo_app:detail' i.id %}"><div class="orange-text waves-effect waves-teal card-action btn-flat" style="width:100%; height: 100%">
-              {% if i.total_votes < 1 %}
-              Votes: 0
-              {% else %}
               Votes: {{ i.total_votes }}
-              {% endif %}
               </div></a>
 
             </div>

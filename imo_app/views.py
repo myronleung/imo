@@ -50,8 +50,6 @@ def detail(request, question_id):
     c = Comment.objects.filter(question=q)
     v = Voted.objects.filter(voter=u, question = q)
     author = q.author.user.username
-    if (current_user.username == author):
-        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
@@ -180,7 +178,7 @@ def submit_newentry(request, id=None):
             c3.save()
             author_name = q.author.user.username
             if (author_name == current_user.username):
-                q.total_votes += .5
+                q.total_votes += 1
                 return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('imo_app:detail', args=[q.id]))
@@ -211,10 +209,11 @@ def submit_vote(request, question_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
-        if question.total_votes < 1:
-            question.total_votes = 1
-        else:
-            question.total_votes += 1
+        choices = Choice.objects.all().filter(question=question)
+        choice1 = choices[0].votes
+        choice2 = choices[1].votes
+        choice3 = choices[2].votes
+        question.total_votes = choice1 + choice2 + choice3
         question.save()
         selected_choice.percentage = round((selected_choice.votes / question.total_votes) * 100.0,2)
         selected_choice.save()
