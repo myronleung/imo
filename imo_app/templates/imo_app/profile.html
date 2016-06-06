@@ -10,7 +10,9 @@
     <div class="row">
     <div class="col s5">
         <h4>{{ first_name }} {{ last_name }}</h4>
+        {% if picture != null %}
         <img src='{{ picture.url }}' class='img-responsive' width="250px" height="250px" />
+        {% endif %}
         <br></br>
         <strong>Motto:</strong> "{{ motto }}"
         <br></br>
