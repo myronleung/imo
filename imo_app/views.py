@@ -18,16 +18,9 @@ from django.utils import timezone
 # Create your views here.
 def index(request):
     q_list = Question.objects.all()
-    query = request.GET.get("q")
-    if query:
-        q_list = q_list.filter(
-            Q(question_text__icontains=query)|
-            Q(description__icontains=query)|
-            Q(choice1__icontains=query)|
-            Q(choice2__icontains=query)|
-            Q(choice3__icontains=query)
-            ).distinct()
-
+    if request.GET.get("q"):
+        query = request.GET.get("q")
+        q_list = search_bars(q_list, query)
     paginator = Paginator(q_list, 12) # Show 25 contacts per page
     page = request.GET.get('page')
     try:
@@ -50,6 +43,8 @@ def detail(request, question_id):
     c = Comment.objects.filter(question=q)
     v = Voted.objects.filter(voter=u, question = q)
     author = q.author.user.username
+    if author == current_user.username:
+        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
@@ -168,7 +163,7 @@ def submit_newentry(request, id=None):
             image1 = instance.image1
             image2 = instance.image2
             image3 = instance.image3
-            q = Question(question_text = question_text, author = author, description = description, pub_date = pub_date)
+            q = Question(question_text = question_text, author = author, description = description, pub_date = pub_date, choice1 = choice1, choice2 = choice2, choice3 = choice3, image1 = image1, image2 = image2, image3 = image3)
             q.save()
             c1 = Choice(question = q, choice_text = choice1, image = image1)
             c1.save()
@@ -381,6 +376,9 @@ def your_posts(request):
     if current_user.is_authenticated():
         author = UserProfile.objects.get(id=current_user.id)
         q_list = Question.objects.filter(author=author)
+        if request.GET.get("q"):
+            query = request.GET.get("q")
+            q_list = search_bars(q_list, query)
         paginator = Paginator(q_list, 12) # Show 25 contacts per page
         page = request.GET.get('page')
         try:
@@ -412,6 +410,9 @@ def profile(request):
             instance.save()
             author = UserProfile.objects.get(id=current_user.id)
             q_list = Question.objects.filter(author=author)
+            if request.GET.get("q"):
+                query = request.GET.get("q")
+                q_list = search_bars(q_list, query)
             paginator = Paginator(q_list, 12) # Show 25 contacts per page
             page = request.GET.get('page')
             try:
@@ -442,15 +443,9 @@ def profile(request):
         return render(request, 'imo_app/profile_form.html', context)
     author = UserProfile.objects.get(id=current_user.id)
     q_list = Question.objects.filter(author=author)
-    query = request.GET.get("q")
-    if query:
-        q_list = q_list.filter(
-            Q(question_text__icontains=query)|
-            Q(description__icontains=query)|
-            Q(choice1__icontains=query)|
-            Q(choice2__icontains=query)|
-            Q(choice3__icontains=query)
-            ).distinct()
+    if request.GET.get("q"):
+        query = request.GET.get("q")
+        q_list = search_bars(q_list, query)
     paginator = Paginator(q_list, 10) # Show 25 contacts per page
     page = request.GET.get('page')
     try:
@@ -474,3 +469,16 @@ def profile(request):
         'picture': author.picture,
     }
     return render(request, 'imo_app/profile.html', context)
+
+def search_bars(q_list, query):
+    if query:
+        choice = Choice.objects.filter(choice_text = query)
+        choices = Choice.objects.get(id = choice)
+        q_list = q_list.filter(
+            Q(question_text__icontains=query)|
+            Q(description__icontains=query)|
+            Q(choice1__icontains=choices)|
+            Q(choice2__icontains=choices)|
+            Q(choice3__icontains=choices)
+            ).distinct()
+        return q_list
