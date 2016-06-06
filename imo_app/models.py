@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     gender = models.CharField(default='', blank=True, max_length=15)
-    picture = models.ImageField(blank=True, null=True, upload_to='')
+    picture = models.ImageField(blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
     about = models.TextField(default='')
     motto = models.CharField(max_length=200, default='')
