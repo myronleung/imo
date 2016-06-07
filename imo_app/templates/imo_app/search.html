@@ -25,6 +25,21 @@
           </div>
         </div>
         {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if p_all.has_previous %}
+                <a href="?page={{ p_all.previous_page_number }}{% if request.GET.p %}&p={{ request.GET.p }}{% endif %}">previous</a>
+            {% endif %}
+
+            <span class="current" style="padding: 20px">
+                Page {{ p_all.number }} of {{ p_all.paginator.num_pages }}.
+            </span>
+
+            {% if p_all.has_next %}
+                <a href="?page={{ p_all.next_page_number }}{% if request.GET.p %}&p={{ request.GET.p }}{% endif %}">next</a>
+            {% endif %}
+        </span>
+    </div>
     </div>
     <div class="col s7">
     {% if user.is_authenticated %}
@@ -63,6 +78,21 @@
           </div>
         {% endfor %}
         <!-- this is the pagination that allows us to have multiple pages -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if q_all.has_previous %}
+                    <a href="?page={{ q_all.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ q_all.number }} of {{ q_all.paginator.num_pages }}.
+                </span>
+
+                {% if q_all.has_next %}
+                    <a href="?page={{ q_all.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+                {% endif %}
+            </span>
+        </div>
       </div>
     </div>
   </div>

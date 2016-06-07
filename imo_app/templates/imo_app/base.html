@@ -17,7 +17,7 @@
     <nav>
       <div class="nav-wrapper" style="background-color: #66CCCC">
       <ul class="right hide-on-med-and-down">
-        <a class="brand-logo center">In My Opinion</a>
+        <a class="brand-logo center" style="font-size: 45px"><strong>In My Opinion</strong></a>
         {% if user.is_authenticated %}
           <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
           <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
@@ -34,7 +34,7 @@
         <div class="nav-wrapper" style="background-color: #00CCFF">
           <a class="brand-logo center">
           <form action="{% url 'imo_app:search' %}" method="GET">
-          <input type='text' class = "center-align" name='a' placeholder='Search IMO' value='{{ request.GET.a }}' width=1000px />
+          <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search IMO' value='{{ request.GET.a }}'  />
           </form>
           </a>
           <ul id="nav-mobile" class="left hide-on-med-and-down" size="250%">

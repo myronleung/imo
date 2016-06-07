@@ -479,11 +479,36 @@ def search(request):
         return HttpResponseRedirect(reverse('imo_app:index'))
     q_list = Question.objects.all()
     prof_list = UserProfile.objects.all()
-    prof_list = prof_list.filter(Q(name__icontains=query))
+    prof_list = prof_list.filter(
+        Q(name__icontains=query)|
+        Q(motto__icontains=query)
+        )
     q_list = search_bars(q_list, query)
+    #paginator for questions
+    paginator = Paginator(q_list, 10) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
+    #paginator for profiles
+    paginator = Paginator(prof_list, 10) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        p = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        p = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        p = paginator.page(paginator.num_pages)
     context = {
-        'q_all': q_list,
-        'p_all': prof_list,
+        'q_all': q,
+        'p_all': p,
         'query': query
     }
     return render(request, 'imo_app/search.html', context)
