@@ -13,9 +13,14 @@ class UserProfile(models.Model):
     birthday = models.DateField(blank=True, null=True)
     about = models.TextField(null = True, blank = True, default='')
     motto = models.CharField(max_length=200, null = True, blank=True, default='')
+    total_friends = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username
+
+    def get_friends(self):
+        user = self.user
+        return Friendship.objects.filter(Q(requestor=user)|Q(friend=user))
 
 class Question(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -73,3 +78,8 @@ class Reply(models.Model):
 class Voted(models.Model):
     voter = models.ForeignKey(UserProfile)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+class Friendship(models.Model):
+    requester = models.ForeignKey(UserProfile, related_name="friendship_creator_set")
+    friend = models.ManyToManyField(UserProfile, related_name="friend_set")
+    friend_request = models.ManyToManyField(UserProfile)

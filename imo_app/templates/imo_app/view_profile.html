@@ -8,42 +8,24 @@
     <!-- right side -->
     <div class="container">
     <div class="row">
-    <div class="col s4">
-        <h4>Profiles with {{ query }}</h4>
-        {% for i in p_all %}
-        <div class="card">
-          <div class="card-image">
-            {% if i.picture %}
-            <img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" />
-            {% endif %}
-          </div>
-          <div class="card-content">
-            <p>{{i.motto}}</p>
-          </div>
-          <div class="card-action">
-            <a href="{% url 'imo_app:view_profile' i.id %}">{{ i.name }}</a>
-          </div>
-        </div>
-        {% endfor %}
-    <div class="pagination">
-        <span class="step-links">
-            {% if p_all.has_previous %}
-                <a href="?page={{ p_all.previous_page_number }}{% if request.GET.p %}&p={{ request.GET.p }}{% endif %}">previous</a>
-            {% endif %}
-
-            <span class="current" style="padding: 20px">
-                Page {{ p_all.number }} of {{ p_all.paginator.num_pages }}.
-            </span>
-
-            {% if p_all.has_next %}
-                <a href="?page={{ p_all.next_page_number }}{% if request.GET.p %}&p={{ request.GET.p }}{% endif %}">next</a>
-            {% endif %}
-        </span>
-    </div>
+    <div class="col s5">
+        <h4>{{ first_name }} {{ last_name }}</h4>
+        {% if picture %}
+        <img src='{{ picture.url }}' class='img-responsive' width="250px" height="250px" />
+        {% endif %}
+        <br></br>
+        <strong>Motto:</strong> "{{ motto }}"
+        <br></br>
+        <strong>About:</strong> {{ about }}
+        <br></br>
+        <strong>Birthday:</strong> {{ birthday }}
+        <br></br>
+        <strong>Gender:</strong> {{ gender }}
+        <br></br>
     </div>
     <div class="col s7">
     {% if user.is_authenticated %}
-      <h4>Polls with {{ query }}</h4>
+    <h4>{{ first_name }}'s Polls</h4>
       <div class="row">
         <div class="col m12">
         <form method='GET' action=''>

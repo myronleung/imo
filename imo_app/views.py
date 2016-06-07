@@ -43,8 +43,6 @@ def detail(request, question_id):
     c = Comment.objects.filter(question=q)
     v = Voted.objects.filter(voter=u, question = q)
     author = q.author.user.username
-    if author == current_user.username:
-        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
@@ -473,6 +471,32 @@ def profile(request):
     }
     return render(request, 'imo_app/profile.html', context)
 
+def view_profile(request, id):
+    profile = UserProfile.objects.get(id=id)
+    q_list = Question.objects.filter(author=profile)
+    paginator = Paginator(q_list, 10) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
+    context = {
+        'q_all': q,
+        'first_name': profile.user.first_name,
+        'last_name': profile.user.last_name,
+        'gender': profile.gender,
+        'birthday': profile.birthday,
+        'about': profile.about,
+        'email': profile.user.email,
+        'motto': profile.motto,
+        'picture': profile.picture,
+    }
+    return render(request, 'imo_app/view_profile.html', context)
+
 def search(request):
     query = request.GET.get("a")
     if query == "":
@@ -528,3 +552,22 @@ def search_bars(q_list, query):
             Q(choice3__icontains=choices)
             ).distinct()
         return q_list
+
+#function to display friends
+#def friends(request):
+#    current_user = request.user
+#    friends = Friendship.objects.filter(requester=current_user)
+#    context = {
+#        'friends': friends
+#    }
+#    return render(request, 'imo_app/friends.html', context)
+
+
+def request_friend(request, id=None):
+    pass
+
+def accept_friend(request):
+    pass
+
+def delete_friend(request):
+    pass
