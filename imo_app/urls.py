@@ -20,5 +20,6 @@ urlpatterns = [
     url(r'^(?P<question_id>[0-9]+)/add_comment/$', views.add_comment, name = 'add_comment'),
     url(r'^about/$', views.about, name = 'about'),
     url(r'^faq/$', views.faq, name = 'faq'),
-    url(r'^profile/$', views.profile, name = 'profile')
+    url(r'^profile/$', views.profile, name = 'profile'),
+    url(r'^search/', views.search, name = 'search'),
 ]

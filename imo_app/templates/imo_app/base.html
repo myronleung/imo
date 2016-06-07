@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
+
 <html>
   <head>
     <meta charset="utf-8">
@@ -12,9 +13,11 @@
   </head>
   <body>
 
+  <div class = "navbar-fixed">
     <nav>
       <div class="nav-wrapper" style="background-color: #66CCCC">
       <ul class="right hide-on-med-and-down">
+        <a class="brand-logo center">In My Opinion</a>
         {% if user.is_authenticated %}
           <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
           <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
@@ -24,15 +27,21 @@
           </ul>
         {% endif %}
       </div>
+    </div>
     </nav>
+    <div class = "navbar-fixed">
     <nav>
         <div class="nav-wrapper" style="background-color: #00CCFF">
+          <a class="brand-logo center">
+          <form method='GET' action='search'>
+          <input type='text' class = "center-align" name='a' placeholder='Search IMO' value='{{ request.GET.a }}' width=1000px />
+          </form>
+          </a>
           <ul id="nav-mobile" class="left hide-on-med-and-down" size="250%">
             <li><a href="{% url 'imo_app:index' %}">Home</a></li>
             <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
             <li><a href="{% url 'imo_app:your_posts' %}">Your Posts</a></li>
           </ul>
-          <a class="brand-logo center">In My Opinion</a>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="{% url 'imo_app:about' %}">About</a></li>
             <li><a href="{% url 'imo_app:faq' %}">FAQ</a></li>
@@ -40,6 +49,8 @@
           </ul>
         </div>
       </nav>
+    </div>
+
     <div class="container">
       {% block content %}
       {% endblock %}

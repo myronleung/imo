@@ -76,10 +76,12 @@ def submit_registration(request):
             email = form.cleaned_data['email']
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
+            name = first_name + ' ' + last_name
 
             u = User.objects.create_user(username = username, password = password, email = email, first_name=first_name, last_name=last_name)
             u.save()
             p = UserProfile(user = u)
+            p.name = name
             p.save()
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('imo_app:index'))
@@ -470,6 +472,21 @@ def profile(request):
         'picture': author.picture,
     }
     return render(request, 'imo_app/profile.html', context)
+
+def search(request):
+    query = request.GET.get("a")
+    if query == "":
+        return HttpResponseRedirect(reverse('imo_app:index'))
+    q_list = Question.objects.all()
+    prof_list = UserProfile.objects.all()
+    prof_list = prof_list.filter(Q(name__icontains=query))
+    q_list = search_bars(q_list, query)
+    context = {
+        'q_all': q_list,
+        'p_all': prof_list,
+        'query': query
+    }
+    return render(request, 'imo_app/search.html', context)
 
 def search_bars(q_list, query):
     if query:

@@ -7,11 +7,12 @@ from django.contrib.auth.models import User
 # Create your models here.
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
+    name = models.CharField(max_length=200, default='')
     gender = models.CharField(default='', blank=True, max_length=15)
     picture = models.ImageField(blank=True, null=True, default='')
     birthday = models.DateField(blank=True, null=True)
-    about = models.TextField(default='')
-    motto = models.CharField(max_length=200, default='')
+    about = models.TextField(null = True, blank = True, default='')
+    motto = models.CharField(max_length=200, null = True, blank=True, default='')
 
     def __str__(self):
         return self.user.username

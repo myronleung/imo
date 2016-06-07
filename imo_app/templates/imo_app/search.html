@@ -8,28 +8,27 @@
     <!-- right side -->
     <div class="container">
     <div class="row">
-    <div class="col s5">
-        <h4>{{ first_name }} {{ last_name }}</h4>
-        {% if picture %}
-        <img src='{{ picture.url }}' class='img-responsive' width="250px" height="250px" />
-        {% endif %}
-        <br></br>
-        <strong>Motto:</strong> "{{ motto }}"
-        <br></br>
-        <strong>About:</strong> {{ about }}
-        <br></br>
-        <strong>Birthday:</strong> {{ birthday }}
-        <br></br>
-        <strong>Gender:</strong> {{ gender }}
-        <br></br>
-    <form action="{% url 'imo_app:profile' %}" method="POST">
-      {% csrf_token %}
-      <input type="submit" value="edit" name='edit' class='btn' size=50%; />
-    </form>
+    <div class="col s4">
+        <h4>Profiles with {{ query }}</h4>
+        {% for i in p_all %}
+        <div class="card">
+          <div class="card-image">
+            {% if i.picture %}
+            <img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" />
+            {% endif %}
+          </div>
+          <div class="card-content">
+            <p>{{i.motto}}</p>
+          </div>
+          <div class="card-action">
+            <a href="#">{{ i.name }}</a>
+          </div>
+        </div>
+        {% endfor %}
     </div>
     <div class="col s7">
     {% if user.is_authenticated %}
-    <h4>{{ first_name }}'s Polls</h4>
+      <h4>Polls with {{ query }}</h4>
       <div class="row">
         <div class="col m12">
         <form method='GET' action=''>
@@ -64,21 +63,6 @@
           </div>
         {% endfor %}
         <!-- this is the pagination that allows us to have multiple pages -->
-        <div class="pagination">
-            <span class="step-links">
-                {% if q_all.has_previous %}
-                    <a href="?page={{ q_all.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
-                {% endif %}
-
-                <span class="current">
-                    Page {{ q_all.number }} of {{ q_all.paginator.num_pages }}.
-                </span>
-
-                {% if q_all.has_next %}
-                    <a href="?page={{ q_all.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
-                {% endif %}
-            </span>
-        </div>
       </div>
     </div>
   </div>
