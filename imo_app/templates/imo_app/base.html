@@ -33,7 +33,7 @@
     <nav>
         <div class="nav-wrapper" style="background-color: #00CCFF">
           <a class="brand-logo center">
-          <form method='GET' action='search'>
+          <form action="{% url 'imo_app:search' %}" method="GET">
           <input type='text' class = "center-align" name='a' placeholder='Search IMO' value='{{ request.GET.a }}' width=1000px />
           </form>
           </a>
