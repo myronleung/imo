@@ -22,6 +22,7 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 # Checks if running on Heroku or local
 # If heroku, sets to public settings, otherwise local
+
 if 'SECRET_KEY' in os.environ:
     SECRET_KEY = 'SECRET_KEY' in os.environ
 
@@ -35,7 +36,6 @@ else:
     DEBUG = True
 
     ALLOWED_HOSTS = []
-# Application definition
 
 INSTALLED_APPS = [
     'imo_app.apps.ImoAppConfig',
