@@ -506,9 +506,14 @@ def profile(request):
     return render(request, 'imo_app/profile.html', context)
 
 def view_profile(request, id):
+    current_user = request.user
     profile = UserProfile.objects.get(id=id)
     q_list = Question.objects.filter(author=profile)
     friends_list = Friendship.objects.filter(requester=id)
+    status = ''
+    if Friendship.objects.filter(requester=current_user.id, friend=id):
+        friend_check = Friendship.objects.get(requester=current_user.id, friend=id)
+        status = friend_check.status
     total_friends = profile.total_friends
     #paginator for friends
     paginator = Paginator(friends_list, 20) # Show 25 contacts per page
@@ -533,6 +538,7 @@ def view_profile(request, id):
         # If page is out of range (e.g. 9999), deliver last page of results.
         q = paginator.page(paginator.num_pages)
     context = {
+        'status': status,
         'friends': total_friends,
         'f_all': f,
         'q_all': q,
@@ -544,6 +550,7 @@ def view_profile(request, id):
         'email': profile.user.email,
         'motto': profile.motto,
         'picture': profile.picture,
+        'id': id
     }
     return render(request, 'imo_app/view_profile.html', context)
 
@@ -627,15 +634,23 @@ def paginator(q_list, num):
 
 
 def request_friend(request, friend_id):
-    current_user = request.user.id
-    friend = Friendship(requester=current_user, friend=friend_id, status='request')
-    friend.save()
-    view_profile(request, friend_id)
-        #if return doesn't call the view_rofile
-    """
-    profile = UserProfile.objects.get(id=id)
+    current_user = request.user
+    requester = UserProfile.objects.get(id=current_user.id)
+    profile = UserProfile.objects.get(id=friend_id)
+    if Friendship.objects.filter(requester=current_user.id, friend=friend_id):
+        pass
+    else:
+        friend = Friendship(requester=requester, friend=profile, status='requested')
+        friend.save()
+
+    #normal view_profile code
+    #lets try to find a way to just call that function
     q_list = Question.objects.filter(author=profile)
-    friends_list = Friendship.objects.filter(requester=id)
+    friends_list = Friendship.objects.filter(requester=profile)
+    status = ''
+    if Friendship.objects.filter(requester=current_user.id, friend=friend_id):
+        friend_check = Friendship.objects.get(requester=current_user.id, friend=friend_id)
+        status = friend_check.status
     total_friends = profile.total_friends
     #paginator for friends
     paginator = Paginator(friends_list, 20) # Show 25 contacts per page
@@ -660,9 +675,11 @@ def request_friend(request, friend_id):
         # If page is out of range (e.g. 9999), deliver last page of results.
         q = paginator.page(paginator.num_pages)
     context = {
+        'status': status,
         'friends': total_friends,
         'f_all': f,
         'q_all': q,
+        'id': profile.user.id,
         'first_name': profile.user.first_name,
         'last_name': profile.user.last_name,
         'gender': profile.gender,
@@ -673,7 +690,6 @@ def request_friend(request, friend_id):
         'picture': profile.picture,
     }
     return render(request, 'imo_app/view_profile.html', context)
-    """
 
 def accept_friend(request, friend_id):
     pass
