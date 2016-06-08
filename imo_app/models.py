@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+from django.db.models import Q
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -82,4 +84,5 @@ class Voted(models.Model):
 class Friendship(models.Model):
     requester = models.ForeignKey(UserProfile, related_name="friendship_creator_set")
     friend = models.ManyToManyField(UserProfile, related_name="friend_set")
-    friend_request = models.ManyToManyField(UserProfile)
+    status = models.CharField(max_length=50, default='')
+    relation_date = models.DateTimeField(auto_now_add=True, editable=False)

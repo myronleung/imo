@@ -12,7 +12,7 @@ from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm
-from .models import UserProfile, Question, Choice, Comment, Voted
+from .models import UserProfile, Question, Choice, Comment, Voted, Friendship
 
 from django.utils import timezone
 # Create your views here.
@@ -396,14 +396,18 @@ def your_posts(request):
         raise Http404
 
 def profile(request):
+    #Calls
     current_user=request.user
-    instance = UserProfile.objects.get(id=current_user.id)
+    author = UserProfile.objects.get(id=current_user.id)
+    friends_list = Friendship.objects.filter(requester=current_user.id)
+    q_list = Question.objects.filter(author=author)
+    total_friends = author.total_friends
     #if trying to edit
     if (request.POST.get('edit')):
         form = ProfileForm(instance=instance)
         return render(request, 'imo_app/profile_form.html', {'form': form})
     elif request.method == 'POST':
-        form = ProfileForm(request.POST or None, request.FILES or None, instance=instance)
+        form = ProfileForm(request.POST or None, request.FILES or None, instance=author)
         if form.is_valid():
             # process the data in form.cleaned_data as required
             instance = form.save(commit=False)
@@ -424,7 +428,20 @@ def profile(request):
             except EmptyPage:
                 # If page is out of range (e.g. 9999), deliver last page of results.
                 q = paginator.page(paginator.num_pages)
+            #paginator for friends
+            paginator = Paginator(friends_list, 20) # Show 25 contacts per page
+            page = request.GET.get('page')
+            try:
+                f = paginator.page(page)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                f = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                f = paginator.page(paginator.num_pages)
             context = {
+                'friends': total_friends,
+                'f_all': f,
                 'q_all': q,
                 'current_user': current_user,
                 'first_name': author.user.first_name,
@@ -442,8 +459,7 @@ def profile(request):
             "form": form,
         }
         return render(request, 'imo_app/profile_form.html', context)
-    author = UserProfile.objects.get(id=current_user.id)
-    q_list = Question.objects.filter(author=author)
+    #check if they have a query
     if request.GET.get("q"):
         query = request.GET.get("q")
         q_list = search_bars(q_list, query)
@@ -457,7 +473,20 @@ def profile(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         q = paginator.page(paginator.num_pages)
+    #paginator for friends
+    paginator = Paginator(friends_list, 20) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        f = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        f = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        f = paginator.page(paginator.num_pages)
     context = {
+        'friends': total_friends,
+        'f_all': f,
         'q_all': q,
         'current_user': current_user,
         'first_name': author.user.first_name,
@@ -474,6 +503,20 @@ def profile(request):
 def view_profile(request, id):
     profile = UserProfile.objects.get(id=id)
     q_list = Question.objects.filter(author=profile)
+    friends_list = Friendship.objects.filter(requester=id)
+    total_friends = profile.total_friends
+    #paginator for friends
+    paginator = Paginator(friends_list, 20) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        f = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        f = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        f = paginator.page(paginator.num_pages)
+    #paginator for questions
     paginator = Paginator(q_list, 10) # Show 25 contacts per page
     page = request.GET.get('page')
     try:
@@ -485,6 +528,8 @@ def view_profile(request, id):
         # If page is out of range (e.g. 9999), deliver last page of results.
         q = paginator.page(paginator.num_pages)
     context = {
+        'friends': total_friends,
+        'f_all': f,
         'q_all': q,
         'first_name': profile.user.first_name,
         'last_name': profile.user.last_name,
@@ -498,12 +543,12 @@ def view_profile(request, id):
     return render(request, 'imo_app/view_profile.html', context)
 
 def search(request):
+    q_list = Question.objects.all()
+    prof_list = UserProfile.objects.all()
     query = request.GET.get("a")
     if query == "":
         return HttpResponseRedirect(reverse('imo_app:index'))
-    q_list = Question.objects.all()
-    prof_list = UserProfile.objects.all()
-    prof_list = prof_list.filter(
+    prof_list = UserProfile.objects.filter(
         Q(name__icontains=query)|
         Q(motto__icontains=query)
         )
@@ -561,6 +606,19 @@ def search_bars(q_list, query):
 #        'friends': friends
 #    }
 #    return render(request, 'imo_app/friends.html', context)
+
+def paginator(q_list, num):
+    paginator = Paginator(q_list, num) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
+    return q
 
 
 def request_friend(request, id=None):

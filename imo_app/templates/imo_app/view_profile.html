@@ -22,6 +22,21 @@
         <br></br>
         <strong>Gender:</strong> {{ gender }}
         <br></br>
+        <strong>Friends:</strong> {{ friends }}
+        {% for i in f %}
+          <div class="card">
+            <div class="col m1">
+              <div class="card-image">
+                {% if i.picture %}
+                  <img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" />
+                {% endif %}
+              </div>
+            <div class="card-action">
+              <a href="{% url 'imo_app:view_profile' i.id %}">{{ i.name }}</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
     </div>
     <div class="col s7">
     {% if user.is_authenticated %}

@@ -37,6 +37,7 @@
           <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search IMO' value='{{ request.GET.a }}'  />
           </form>
           </a>
+          {% if user.is_authenticated %}
           <ul id="nav-mobile" class="left hide-on-med-and-down" size="250%">
             <li><a href="{% url 'imo_app:index' %}">Home</a></li>
             <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
@@ -46,6 +47,7 @@
             <li><a href="{% url 'imo_app:about' %}">About</a></li>
             <li><a href="{% url 'imo_app:faq' %}">FAQ</a></li>
             <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
+          {% endif %}
           </ul>
         </div>
       </nav>
