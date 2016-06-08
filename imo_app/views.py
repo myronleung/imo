@@ -634,55 +634,6 @@ def paginator(q_list, num):
 
 
 def request_friend(request, friend_id):
-<<<<<<< HEAD
-    current_user = request.user.id
-    friend = Friendship(requester=current_user, friend=friend_id, status='request')
-    friend.save()
-    view_profile(request, friend_id)
-        #if return doesn't call the view_rofile
-        # """
-        # profile = UserProfile.objects.get(id=id)
-        # q_list = Question.objects.filter(author=profile)
-        # friends_list = Friendship.objects.filter(requester=id)
-        # total_friends = profile.total_friends
-        # #paginator for friends
-        # paginator = Paginator(friends_list, 20) # Show 25 contacts per page
-        # page = request.GET.get('page')
-        # try:
-        #     f = paginator.page(page)
-        # except PageNotAnInteger:
-        #     # If page is not an integer, deliver first page.
-        #     f = paginator.page(1)
-        # except EmptyPage:
-        #     # If page is out of range (e.g. 9999), deliver last page of results.
-        #     f = paginator.page(paginator.num_pages)
-        # #paginator for questions
-        # paginator = Paginator(q_list, 10) # Show 25 contacts per page
-        # page = request.GET.get('page')
-        # try:
-        #     q = paginator.page(page)
-        # except PageNotAnInteger:
-        #     # If page is not an integer, deliver first page.
-        #     q = paginator.page(1)
-        # except EmptyPage:
-        #     # If page is out of range (e.g. 9999), deliver last page of results.
-        #     q = paginator.page(paginator.num_pages)
-        # context = {
-        #     'friends': total_friends,
-        #     'f_all': f,
-        #     'q_all': q,
-        #     'first_name': profile.user.first_name,
-        #     'last_name': profile.user.last_name,
-        #     'gender': profile.gender,
-        #     'birthday': profile.birthday,
-        #     'about': profile.about,
-        #     'email': profile.user.email,
-        #     'motto': profile.motto,
-        #     'picture': profile.picture,
-        # }
-        # return render(request, 'imo_app/view_profile.html', context)
-        # """
-=======
     current_user = request.user
     requester = UserProfile.objects.get(id=current_user.id)
     profile = UserProfile.objects.get(id=friend_id)
@@ -739,7 +690,7 @@ def request_friend(request, friend_id):
         'picture': profile.picture,
     }
     return render(request, 'imo_app/view_profile.html', context)
->>>>>>> cff0f2bdfc14e8457be78187acab3c4e4f642900
+
 
 def accept_friend(request, friend_id):
     pass
