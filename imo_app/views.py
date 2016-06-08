@@ -409,7 +409,7 @@ def profile(request):
     total_friends = author.total_friends
     #if trying to edit
     if (request.POST.get('edit')):
-        form = ProfileForm(instance=instance)
+        form = ProfileForm(instance=author)
         return render(request, 'imo_app/profile_form.html', {'form': form})
     elif request.method == 'POST':
         form = ProfileForm(request.POST or None, request.FILES or None, instance=author)
@@ -489,7 +489,12 @@ def profile(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         f = paginator.page(paginator.num_pages)
+
+    requests = ''
+    if Friendship.objects.filter(friend=current_user.id, status='requested'):
+        requests = Friendship.objects.filter(friend=current_user.id, status='requested')
     context = {
+        'requests': requests,
         'friends': total_friends,
         'f_all': f,
         'q_all': q,
@@ -690,6 +695,7 @@ def request_friend(request, friend_id):
         'picture': profile.picture,
     }
     return render(request, 'imo_app/view_profile.html', context)
+
 
 def accept_friend(request, friend_id):
     pass

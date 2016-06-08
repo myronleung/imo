@@ -4,11 +4,19 @@
 
 <br></br>
   </div>
-  <!-- left side -->
-    <!-- right side -->
     <div class="container">
+      <h4>Friend Requests:</h4>
+        <div class="col s9">
+          {% for i in requests %}
+          <a href="{% url 'imo_app:view_profile' i.requester.id %}">{{i.requester.user.first_name}} {{i.requester.user.last_name}}</a>
+          {% if i.requester.picture %}
+          <p><img src='{{ i.requester.picture.url }}' class='img-responsive' width="150px" height="150px" /></p>
+          {% endif %}
+          {% endfor %}
+        <hr></hr>
+      </div>
     <div class="row">
-    <div class="col s5">
+    <div class="col s3">
         <h4>{{ first_name }} {{ last_name }}</h4>
         {% if picture %}
         <img src='{{ picture.url }}' class='img-responsive' width="250px" height="250px" />
@@ -43,7 +51,7 @@
         </div>
         {% endfor %}
     </div>
-    <div class="col s7">
+    <div class="col s9">
     {% if user.is_authenticated %}
     <h4>{{ first_name }}'s Polls</h4>
       <div class="row">
