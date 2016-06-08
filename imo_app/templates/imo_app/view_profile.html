@@ -8,12 +8,18 @@
     <!-- right side -->
     <div class="container">
     <div class="row">
-    <div class="col s5">
+    <div class="col s3">
         <h4>{{ first_name }} {{ last_name }}</h4>
         {% if picture %}
         <img src='{{ picture.url }}' class='img-responsive' width="250px" height="250px" />
         {% endif %}
-        <br></br>
+        <div class="card-content">
+          {% if status != '' %}
+          <p><i>{{status}}</i></p>
+          {% else %}
+          <p><a href="{% url 'imo_app:request_friend' id %}">Add Friend</a></p>
+          {% endif %}
+        </div>
         <strong>Motto:</strong> "{{ motto }}"
         <br></br>
         <strong>About:</strong> {{ about }}
@@ -31,6 +37,9 @@
                   <img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" />
                 {% endif %}
               </div>
+            <div class="card-content">
+              <p>{{i.status}}</p>
+            </div>
             <div class="card-action">
               <a href="{% url 'imo_app:view_profile' i.id %}">{{ i.name }}</a>
             </div>
@@ -38,7 +47,7 @@
         </div>
         {% endfor %}
     </div>
-    <div class="col s7">
+    <div class="col s8">
     {% if user.is_authenticated %}
     <h4>{{ first_name }}'s Polls</h4>
       <div class="row">
@@ -51,7 +60,7 @@
       </div>
 
         {% for i in q_all %}
-          <div class="col m12">
+          <div class="col m6">
             <div class="card" >
               <div class="card-content">
                 <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}" stile = "font-size: 20px">{{ i.question_text }}</a></span>

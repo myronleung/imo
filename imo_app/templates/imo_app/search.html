@@ -8,10 +8,10 @@
     <!-- right side -->
     <div class="container">
     <div class="row">
-    <div class="col s4">
-        <h4>Profiles with {{ query }}</h4>
+    <div class="col s3">
+        <h4>Profiles</h4>
         {% for i in p_all %}
-        <div class="card">
+        <div class="card" style="width: 250px">
           <div class="card-image">
             {% if i.picture %}
             <img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" />
@@ -19,6 +19,7 @@
           </div>
           <div class="card-content">
             <p>{{i.motto}}</p>
+            <p>{{i.status}}</p>
           </div>
           <div class="card-action">
             <a href="{% url 'imo_app:view_profile' i.id %}">{{ i.name }}</a>
@@ -41,7 +42,7 @@
         </span>
     </div>
     </div>
-    <div class="col s7">
+    <div class="col s8">
     {% if user.is_authenticated %}
       <h4>Polls with {{ query }}</h4>
       <div class="row">
@@ -54,7 +55,7 @@
       </div>
 
         {% for i in q_all %}
-          <div class="col m12">
+          <div class="col m6">
             <div class="card" >
               <div class="card-content">
                 <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}" stile = "font-size: 20px">{{ i.question_text }}</a></span>
