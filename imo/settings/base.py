@@ -22,20 +22,20 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 # Checks if running on Heroku or local
 # If heroku, sets to public settings, otherwise local
-# if 'SECRET_KEY' in os.environ:
-#     SECRET_KEY = 'SECRET_KEY' in os.environ
-#
-#     # SECURITY WARNING: don't run with debug turned on in production!
-#     DEBUG = False
-#
-#     ALLOWED_HOSTS = ['*']
-# else:
-SECRET_KEY = 'fl_v9(iu_qm_+mq^7c)bm0qcue(j%3=n63zx-6^&#17^)(ba5f'
 
-DEBUG = True
+if 'SECRET_KEY' in os.environ:
+    SECRET_KEY = 'SECRET_KEY' in os.environ
 
-ALLOWED_HOSTS = []
-# Application definition
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = False
+
+    ALLOWED_HOSTS = ['*']
+else:
+    SECRET_KEY = 'fl_v9(iu_qm_+mq^7c)bm0qcue(j%3=n63zx-6^&#17^)(ba5f'
+
+    DEBUG = True
+
+    ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'imo_app.apps.ImoAppConfig',
@@ -141,18 +141,18 @@ STATICFILES_DIRS = (
 
 
 
-# if 'SECRET_KEY' in os.environ:
-#
-#     CSRF_COOKIE_SECURE = True
-#
-#     SESSION_COOKIE_SECURE = True
-#
-#     SECURE_CONTENT_TYPE_NOSNIFF = True
-#
-#     SECURE_BROWSER_XSS_FILTER = True
-#
-#     CSRF_COOKIE_HTTPONLY = True
-#
-#     X_FRAME_OPTIONS = 'DENY'
-#
-#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+if 'SECRET_KEY' in os.environ:
+
+    CSRF_COOKIE_SECURE = True
+
+    SESSION_COOKIE_SECURE = True
+
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+    SECURE_BROWSER_XSS_FILTER = True
+
+    CSRF_COOKIE_HTTPONLY = True
+
+    X_FRAME_OPTIONS = 'DENY'
+
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
