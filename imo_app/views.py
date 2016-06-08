@@ -644,61 +644,43 @@ def request_friend(request, friend_id):
     profile = UserProfile.objects.get(id=friend_id)
     if Friendship.objects.filter(requester=current_user.id, friend=friend_id):
         pass
+    elif Friendship.objects.filter(requester=friend_id, friend=current_user.id, status='requested'):
+        friend = Friendship(requester=requester, friend=profile, status='Friends')
+        friend.save()
+        accept_friend(request, friend_id)
     else:
         friend = Friendship(requester=requester, friend=profile, status='requested')
         friend.save()
 
-    #normal view_profile code
-    #lets try to find a way to just call that function
-    q_list = Question.objects.filter(author=profile)
-    friends_list = Friendship.objects.filter(requester=profile)
-    status = ''
-    if Friendship.objects.filter(requester=current_user.id, friend=friend_id):
-        friend_check = Friendship.objects.get(requester=current_user.id, friend=friend_id)
-        status = friend_check.status
-    total_friends = profile.total_friends
-    #paginator for friends
-    paginator = Paginator(friends_list, 20) # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        f = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        f = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        f = paginator.page(paginator.num_pages)
-    #paginator for questions
-    paginator = Paginator(q_list, 10) # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        q = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        q = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        q = paginator.page(paginator.num_pages)
-    context = {
-        'status': status,
-        'friends': total_friends,
-        'f_all': f,
-        'q_all': q,
-        'id': profile.user.id,
-        'first_name': profile.user.first_name,
-        'last_name': profile.user.last_name,
-        'gender': profile.gender,
-        'birthday': profile.birthday,
-        'about': profile.about,
-        'email': profile.user.email,
-        'motto': profile.motto,
-        'picture': profile.picture,
-    }
-    return render(request, 'imo_app/view_profile.html', context)
+    return HttpResponseRedirect(reverse('imo_app:view_profile', args=[profile.id]))
 
 
 def accept_friend(request, friend_id):
-    pass
+    current_user = request.user
+    friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
+    friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
+    friend1.status = 'Friends'
+    friend2.status = 'Friends'
+    friend1.save()
+    friend2.save()
 
-def delete_friend(request):
-    pass
+    #update total_friends
+    person1 = UserProfile.objects.get(id=current_user.id)
+    person2 = UserProfile.objects.get(id=friend_id)
+    person1.total_votes += 1
+    person2.total_votes += 1
+    person1.save()
+    person2.save()
+
+    return HttpResponseRedirect(reverse('imo_app:view_profile', args=[friend2.requester.id]))
+
+
+
+def delete_friend(request, friend_id):
+    current_user=request.user
+    friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
+    friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
+    friend1.delete()
+    friend2.delete()
+
+    return HttpResponseRedirect(reverse('imo_app:index'))

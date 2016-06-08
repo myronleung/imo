@@ -15,7 +15,7 @@
         {% endif %}
         <div class="card-content">
           {% if status != '' %}
-          <p><i>Friend {{status}}</i></p>
+          <p><i>{{status}}</i></p>
           {% else %}
           <p><a href="{% url 'imo_app:request_friend' id %}">Add Friend</a></p>
           {% endif %}
