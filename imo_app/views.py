@@ -82,6 +82,8 @@ def submit_registration(request):
             p = UserProfile(user = u)
             p.name = name
             p.save()
+            user = authenticate(username=username, password=password)
+            login(request, user)
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('imo_app:index'))
 
