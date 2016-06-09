@@ -31,9 +31,7 @@ def index(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         q = paginator.page(paginator.num_pages)
-    current_user = request.user
-    context = {'q_all': q, 'current_user': current_user}
-    return render(request, 'imo_app/index.html', context)
+    return render(request, 'imo_app/index.html', {'q_all': q_list})
 
 @login_required
 def detail(request, question_id):
@@ -404,7 +402,7 @@ def profile(request):
     #Calls
     current_user=request.user
     author = UserProfile.objects.get(id=current_user.id)
-    friends_list = Friendship.objects.filter(requester=current_user.id)[:10]
+    friends_list = Friendship.objects.filter(requester=current_user.id, status='Friends')[:10]
     q_list = Question.objects.filter(author=author)
     total_friends = author.total_friends
     #if trying to edit
@@ -503,7 +501,7 @@ def view_profile(request, id):
     current_user = request.user
     profile = UserProfile.objects.get(id=id)
     q_list = Question.objects.filter(author=profile)
-    friends_list = Friendship.objects.filter(requester=id)[:10]
+    friends_list = Friendship.objects.filter(requester=id, status='Friends')[:10]
     #set status to empty in case they aren't friends
     status = ''
     # check if they're friends
@@ -614,6 +612,47 @@ def search_bars(q_list, query):
 #    return q
 
 
+def all_friends(request, user_id):
+    friends_list = Friendship.objects.filter(requester=user_id, status='Friends')
+    if request.GET.get("f"):
+        query = request.GET.get("f")
+        friends_list = Friendship.objects.filter(
+            Q(friend_name__icontains=query), requester=user_id,
+            ).distinct()
+
+    context = {
+        'f_all': friends_list
+    }
+    return render(request, 'imo_app/friends.html', context)
+
+
+def friends_polls(request):
+    current_user = request.user
+    friends = Friendship.objects.filter(requester=current_user.id).values('friend_id')
+    q_list = Question.objects.filter(author__in=friends)
+    if request.GET.get("q"):
+        query = request.GET.get("q")
+        q_list = search_bars(q_list, query)
+    paginator = Paginator(q_list, 12) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
+    requests = ''
+    if Friendship.objects.filter(friend=current_user.id, status='requested'):
+        requests = Friendship.objects.filter(friend=current_user.id, status='requested')[:5]
+    context = {
+        'requests': requests,
+        'q_all': q
+        }
+    return render(request, 'imo_app/friends_polls.html', context)
+
+
 def request_friend(request, friend_id):
     current_user = request.user
     requester = UserProfile.objects.get(id=current_user.id)
@@ -633,8 +672,12 @@ def request_friend(request, friend_id):
 
 def accept_friend(request, friend_id):
     current_user = request.user
+    new_friend = UserProfile.objects.get(id = friend_id)
+    me = UserProfile.objects.get(id = current_user.id)
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
     friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
+    friend1.friend_name = new_friend.name
+    friend2.friend_name = me.name
     friend1.status = 'Friends'
     friend2.status = 'Friends'
     friend1.save()
@@ -657,8 +700,12 @@ def accept_friend_profile(request, friend_id):
     current_user = request.user
     friend = Friendship(requester=requester, friend=profile, status='Friends')
     friend.save()
+    new_friend = UserProfile.objects.get(id = friend_id)
+    me = UserProfile.objects.get(id = current_user.id)
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
     friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
+    friend1.friend_name = new_friend.name
+    friend2.friend_name = me.name
     friend1.status = 'Friends'
     friend2.status = 'Friends'
     friend1.save()
@@ -688,8 +735,12 @@ def accept_friend_friends_feed(request, friend_id):
     current_user = request.user
     friend = Friendship(requester=requester, friend=profile, status='Friends')
     friend.save()
+    new_friend = UserProfile.objects.get(id = friend_id)
+    me = UserProfile.objects.get(id = current_user.id)
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
     friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
+    friend1.friend_name = new_friend.name
+    friend2.friend_name = me.name
     friend1.status = 'Friends'
     friend2.status = 'Friends'
     friend1.save()
@@ -711,24 +762,6 @@ def decline_friend_friends_feed(request, friend_id):
     friend.delete()
 
     return HttpResponseRedirect(reverse('imo_app:friends_feed'))
-
-def all_friends(request, user_id):
-    friends_list = Friendship.objects.filter(requester=user_id)
-    paginator = Paginator(friends_list, 50) # Show 25 contacts per page
-    page = request.GET.get('page')
-    try:
-        f = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        f = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        f = paginator.page(paginator.num_pages)
-
-    context = {
-        'f_all': f
-    }
-    return render(request, 'imo_app/friends.html', context)
 
 def remove_friend(request, friend_id):
     current_user=request.user

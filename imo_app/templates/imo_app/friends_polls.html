@@ -3,16 +3,23 @@
 {% block content %}
   <div class="row">
     <div class="col m12">
-      <p>Welcome to IMO!  The new way to get or give an opinion on a variety of topics.</p>
-      <p>Want to request opinions on some products you are thinking of buying, or decisions you have to make?
-        Click the “create new topic” and specify your question parameters.  Choose whether to ask a private group,
-        friends, or the general public!</p>
-      <p>For all future questions be sure to check out our <a href="faq/">FAQ</a> guide in the settings tab.</p>
-    </div>
+      <h4>Friend Requests:</h4>
+          {% for i in requests %}
+          <a href="{% url 'imo_app:view_profile' i.requester.id %}">{{i.requester.user.first_name}} {{i.requester.user.last_name}}</a>
+          {% if i.requester.picture %}
+          <p><img src='{{ i.requester.picture.url }}' class='img-responsive' width="150px" height="150px" /></p>
+          {% endif %}
+          <a href="{% url 'imo_app:accept_friend_profile' i.requester.id %}">Accept </a>
+          |
+          <a href="{% url 'imo_app:decline_friend_profile' i.requester.id %}">Decline </a>
+          <p></p> <!-- make sure to delete this when we get them side to side!!!!!! -->
+          {% endfor %}
+        <hr></hr>
+      </div>
 
   </div>
     {% if user.is_authenticated %}
-      <h4>Your Polls</h4>
+      <h4>Friend's Polls</h4>
       <div class="row">
         <div class="col m12">
         <form method='GET' action=''>
@@ -23,25 +30,25 @@
       </div>
 
         {% for i in q_all %}
-          <div class="col m6">
+          <div class="col m6"> <!-- change to "col m4" for 3 per page -->
             <div class="card" >
               <div class="card-content">
-                <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}">{{ i.question_text }}</a></span>
+                <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}" style = "font-size: 20px">{{ i.question_text }}</a></span>
                 <hr></hr>
                 <div class="chip">
                   {{ i.author.user.first_name}} {{ i.author.user.last_name}}
                 </div>
                 <br></br>
                 <p class="truncate">{{ i.description }}</p>
-                <br></br>
                 <p class="grey-text">{{ i.pub_date }}</p>
+                <!-- This is the optional pictures addition to cards -->
+                <ul>
+                <li>
+                </li>
+                </ul>
               </div>
               <a href="{% url 'imo_app:detail' i.id %}"><div class="orange-text waves-effect waves-teal card-action btn-flat" style="width:100%; height: 100%">
-              {% if i.total_votes < 1 %}
-              Votes: 0
-              {% else %}
               Votes: {{ i.total_votes }}
-              {% endif %}
               </div></a>
 
             </div>
@@ -66,6 +73,7 @@
       </div>
 
     {% else %}
+
     {% endif %}
     <br></br>
     <br></br>
@@ -74,4 +82,7 @@
     <br></br>
     <br></br>
     <br></br>
+    <br></br>
+    <br></br>
+
 {% endblock content %}

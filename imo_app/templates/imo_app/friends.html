@@ -4,13 +4,20 @@
   <div class="row">
     <div class="col m12">
       <h4>Friends:</h4>
+      <div class="col m12">
+      <form method='GET' action=''>
+      <input type='text' name='f' placeholder='Search friends' value='{{ request.GET.f }}' />
+      <input type='submit' value='Search' />
+      </form>
+      <br></br>
+    </div>
     </div>
     {% for i in f_all %}
       <div class="card">
-        <div class="col s3">
+        <div class="col m2">
           <div class="card-image">
             {% if i.friend.picture %}
-              <img src='{{ i.friend.picture.url }}' class='img-responsive' width="250px" height="250px" />
+              <img src='{{ i.friend.picture.url }}' class='img-responsive' width="100px" height="250px" />
             {% endif %}
           </div>
         <div class="card-action">

@@ -87,5 +87,6 @@ class Voted(models.Model):
 class Friendship(models.Model):
     requester = models.ForeignKey(UserProfile, related_name="friendship_creator_set")
     friend = models.ForeignKey(UserProfile, related_name="friend_set")
+    friend_name = models.CharField(max_length=200, default='')
     status = models.CharField(max_length=50, default='')
     relation_date = models.DateTimeField(auto_now_add=True, editable=False)
