@@ -16,6 +16,7 @@ class UserProfile(models.Model):
     about = models.TextField(null = True, blank = True, default='')
     motto = models.CharField(max_length=200, null = True, blank=True, default='')
     total_friends = models.IntegerField(default=0)
+    sponsor = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -29,6 +30,7 @@ class Question(models.Model):
     author_name = models.CharField(max_length=200, default='')
     question_text = models.CharField(max_length=200)
     description = models.TextField(default = '')
+    category = models.CharField(max_length=50, default='')
     pub_date = models.DateTimeField('date published')
     choice1 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image1 = models.ImageField(null=True, blank=True)
@@ -37,6 +39,7 @@ class Question(models.Model):
     choice3 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image3 = models.ImageField(null=True, blank=True)
     total_votes = models.IntegerField(default = 1)
+
 
     class Meta:
         ordering = ['-pub_date']

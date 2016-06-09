@@ -36,16 +36,17 @@
         </form>
         <br></br>
         <strong>Friends:</strong> {{ friends }}
-        {% for i in f %}
+        <a href="{% url 'imo_app:all_friends' user.id %}">View All Friends</a>
+        {% for i in f_all %}
           <div class="card">
-            <div class="col m1">
+            <div class="col s6">
               <div class="card-image">
-                {% if i.picture %}
-                  <img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" />
+                {% if i.friend.picture %}
+                <a href="{% url 'imo_app:view_profile' i.friend.id %}"><img src='{{ i.friend.picture.url }}' class='img-responsive'/></a>
                 {% endif %}
               </div>
             <div class="card-action">
-              <a href="{% url 'imo_app:view_profile' i.id %}">{{ i.name }}</a>
+              <a href="{% url 'imo_app:view_profile' i.friend.id %}">{{ i.friend.name }}</a>
             </div>
           </div>
         </div>

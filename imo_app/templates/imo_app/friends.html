@@ -1,0 +1,33 @@
+{% extends "imo_app/base.html" %}
+
+{% block content %}
+  <div class="row">
+    <div class="col m12">
+      <h4>Friends:</h4>
+    </div>
+    {% for i in f_all %}
+      <div class="card">
+        <div class="col s3">
+          <div class="card-image">
+            {% if i.friend.picture %}
+              <img src='{{ i.friend.picture.url }}' class='img-responsive' width="250px" height="250px" />
+            {% endif %}
+          </div>
+        <div class="card-action">
+          <a href="{% url 'imo_app:view_profile' i.friend.id %}">{{ i.friend.name }}</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+{% endblock content %}
