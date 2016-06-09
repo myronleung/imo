@@ -31,7 +31,8 @@ def index(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         q = paginator.page(paginator.num_pages)
-    return render(request, 'imo_app/index.html', {'q_all': q_list})
+
+    return render(request, 'imo_app/index.html', {'q_all': q})
 
 @login_required
 def detail(request, question_id):
@@ -185,6 +186,7 @@ def submit_newentry(request, id=None):
 
     return render(request, 'imo_app/view_newentry.html', {'form': form})
 
+@login_required
 def submit_vote(request, question_id):
     current_user = request.user
     question = get_object_or_404(Question, pk=question_id)
@@ -225,6 +227,7 @@ def about(request):
 def faq(request):
     return render(request, 'imo_app/faq.html')
 
+@login_required
 def add_comment(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     comments = request.POST.get('comment_text')
@@ -248,7 +251,7 @@ def add_comment(request, question_id):
         #If they aren't trying to post, just display results
         return render(request, 'imo_app/results.html')
 
-
+@login_required
 def results(request, question_id):
     q = Question.objects.get(id = question_id)
     c = Comment.objects.filter(question=q)
@@ -263,6 +266,7 @@ def results(request, question_id):
     context = {'question':q, 'choices': choices, 'comments': c, 'check_author': check_author}
     return render(request, 'imo_app/results.html', context)
 
+@login_required
 def edit(request, id=None):
     if (request.POST.get('delete')):
         Question.objects.filter(id=id).delete()
@@ -375,29 +379,28 @@ def edit(request, id=None):
     elif author != current_user:
         raise Http404
 
+@login_required
 def your_posts(request):
     current_user = request.user
-    if current_user.is_authenticated():
-        author = UserProfile.objects.get(id=current_user.id)
-        q_list = Question.objects.filter(author=author)
-        if request.GET.get("q"):
-            query = request.GET.get("q")
-            q_list = search_bars(q_list, query)
-        paginator = Paginator(q_list, 12) # Show 25 contacts per page
-        page = request.GET.get('page')
-        try:
-            q = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            q = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            q = paginator.page(paginator.num_pages)
-        context = {'q_all': q, 'current_user': current_user}
-        return render(request, 'imo_app/your_posts.html', context)
-    else:
-        raise Http404
+    author = UserProfile.objects.get(id=current_user.id)
+    q_list = Question.objects.filter(author=author)
+    if request.GET.get("q"):
+        query = request.GET.get("q")
+        q_list = search_bars(q_list, query)
+    paginator = Paginator(q_list, 12) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        q = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        q = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        q = paginator.page(paginator.num_pages)
+    context = {'q_all': q, 'current_user': current_user}
+    return render(request, 'imo_app/your_posts.html', context)
 
+@login_required
 def profile(request):
     #Calls
     current_user=request.user
@@ -497,6 +500,7 @@ def profile(request):
     }
     return render(request, 'imo_app/profile.html', context)
 
+@login_required
 def view_profile(request, id):
     current_user = request.user
     profile = UserProfile.objects.get(id=id)
@@ -542,6 +546,7 @@ def view_profile(request, id):
     }
     return render(request, 'imo_app/view_profile.html', context)
 
+@login_required
 def search(request):
     q_list = Question.objects.all()
     prof_list = UserProfile.objects.all()
@@ -582,6 +587,7 @@ def search(request):
     }
     return render(request, 'imo_app/search.html', context)
 
+
 def search_bars(q_list, query):
     if query:
         choices = 'do not have this string'
@@ -611,24 +617,26 @@ def search_bars(q_list, query):
 #        q = paginator.page(paginator.num_pages)
 #    return q
 
-
+@login_required
 def all_friends(request, user_id):
     friends_list = Friendship.objects.filter(requester=user_id, status='Friends')
     if request.GET.get("f"):
         query = request.GET.get("f")
-        friends_list = Friendship.objects.filter(
-            Q(friend_name__icontains=query), requester=user_id,
-            ).distinct()
-
+        query_people = UserProfile.objects.filter(
+            Q(name__icontains=query)
+            ).values('id')
+        friends_list = Friendship.objects.filter(requester=user_id, friend__in=query_people)
     context = {
         'f_all': friends_list
     }
     return render(request, 'imo_app/friends.html', context)
 
-
+@login_required
 def friends_polls(request):
     current_user = request.user
+    # .values makes it so that it creates a dictionary
     friends = Friendship.objects.filter(requester=current_user.id).values('friend_id')
+    # author in checks whether or not the dictionary has that value, and if so counts that as one
     q_list = Question.objects.filter(author__in=friends)
     if request.GET.get("q"):
         query = request.GET.get("q")
@@ -652,7 +660,7 @@ def friends_polls(request):
         }
     return render(request, 'imo_app/friends_polls.html', context)
 
-
+@login_required
 def request_friend(request, friend_id):
     current_user = request.user
     requester = UserProfile.objects.get(id=current_user.id)
@@ -669,15 +677,11 @@ def request_friend(request, friend_id):
 
     return HttpResponseRedirect(reverse('imo_app:view_profile', args=[profile.id]))
 
-
+@login_required
 def accept_friend(request, friend_id):
     current_user = request.user
-    new_friend = UserProfile.objects.get(id = friend_id)
-    me = UserProfile.objects.get(id = current_user.id)
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
     friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
-    friend1.friend_name = new_friend.name
-    friend2.friend_name = me.name
     friend1.status = 'Friends'
     friend2.status = 'Friends'
     friend1.save()
@@ -693,6 +697,7 @@ def accept_friend(request, friend_id):
 
     return
 
+@login_required
 def accept_friend_profile(request, friend_id):
     current_user = request.user
     requester = UserProfile.objects.get(id=current_user.id)
@@ -700,12 +705,8 @@ def accept_friend_profile(request, friend_id):
     current_user = request.user
     friend = Friendship(requester=requester, friend=profile, status='Friends')
     friend.save()
-    new_friend = UserProfile.objects.get(id = friend_id)
-    me = UserProfile.objects.get(id = current_user.id)
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
     friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
-    friend1.friend_name = new_friend.name
-    friend2.friend_name = me.name
     friend1.status = 'Friends'
     friend2.status = 'Friends'
     friend1.save()
@@ -721,6 +722,7 @@ def accept_friend_profile(request, friend_id):
 
     return HttpResponseRedirect(reverse('imo_app:profile'))
 
+@login_required
 def decline_friend_profile(request, friend_id):
     current_user = request.user
     friend = Friendship.objects.filter(requester=friend_id, friend=current_user.id)
@@ -728,6 +730,7 @@ def decline_friend_profile(request, friend_id):
 
     return HttpResponseRedirect(reverse('imo_app:profile'))
 
+@login_required
 def accept_friend_friends_feed(request, friend_id):
     current_user = request.user
     requester = UserProfile.objects.get(id=current_user.id)
@@ -735,12 +738,8 @@ def accept_friend_friends_feed(request, friend_id):
     current_user = request.user
     friend = Friendship(requester=requester, friend=profile, status='Friends')
     friend.save()
-    new_friend = UserProfile.objects.get(id = friend_id)
-    me = UserProfile.objects.get(id = current_user.id)
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
     friend2 = Friendship.objects.get(requester=friend_id, friend=current_user.id)
-    friend1.friend_name = new_friend.name
-    friend2.friend_name = me.name
     friend1.status = 'Friends'
     friend2.status = 'Friends'
     friend1.save()
@@ -756,6 +755,7 @@ def accept_friend_friends_feed(request, friend_id):
 
     return HttpResponseRedirect(reverse('imo_app:friends_feed'))
 
+@login_required
 def decline_friend_friends_feed(request, friend_id):
     current_user = request.user
     friend = Friendship.objects.filter(requester=friend_id, friend=current_user.id)
@@ -763,6 +763,7 @@ def decline_friend_friends_feed(request, friend_id):
 
     return HttpResponseRedirect(reverse('imo_app:friends_feed'))
 
+@login_required
 def remove_friend(request, friend_id):
     current_user=request.user
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)

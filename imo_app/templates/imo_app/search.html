@@ -43,7 +43,6 @@
     </div>
     </div>
     <div class="col s9">
-    {% if user.is_authenticated %}
       <h4>Polls with {{ query }}</h4>
       <div class="row">
         <div class="col m12">
@@ -98,7 +97,6 @@
     </div>
   </div>
 
-    {% else %}
     <br></br>
     <br></br>
     <br></br>
@@ -108,6 +106,5 @@
     <br></br>
     <br></br>
     <br></br>
-    {% endif %}
 </div>
 {% endblock content %}

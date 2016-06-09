@@ -2,23 +2,28 @@
 
 {% block content %}
   <div class="row">
+    <br></br>
     <div class="col m12">
       <h4>Friend Requests:</h4>
+        <div class="row">
           {% for i in requests %}
+          <div class="col s3">
           <a href="{% url 'imo_app:view_profile' i.requester.id %}">{{i.requester.user.first_name}} {{i.requester.user.last_name}}</a>
           {% if i.requester.picture %}
-          <p><img src='{{ i.requester.picture.url }}' class='img-responsive' width="150px" height="150px" /></p>
+          <a href="{% url 'imo_app:view_profile' i.requester.id %}"><p><img src='{{ i.requester.picture.url }}' class='img-responsive' width="150px" height="150px" /></p></a>
+          {% else %}
+          <a href="{% url 'imo_app:view_profile' i.requester.id %}"><p><img src='{{ 100.url }}' class='img-responsive' width="150px" height="150px" /></p></a>
           {% endif %}
           <a href="{% url 'imo_app:accept_friend_profile' i.requester.id %}">Accept </a>
           |
           <a href="{% url 'imo_app:decline_friend_profile' i.requester.id %}">Decline </a>
           <p></p> <!-- make sure to delete this when we get them side to side!!!!!! -->
+        </div>
           {% endfor %}
-        <hr></hr>
       </div>
+        <hr></hr>
 
   </div>
-    {% if user.is_authenticated %}
       <h4>Friend's Polls</h4>
       <div class="row">
         <div class="col m12">
@@ -71,10 +76,7 @@
             </span>
         </div>
       </div>
-
-    {% else %}
-
-    {% endif %}
+    </div>
     <br></br>
     <br></br>
     <br></br>
