@@ -12,6 +12,10 @@
           {% if i.requester.picture %}
           <p><img src='{{ i.requester.picture.url }}' class='img-responsive' width="150px" height="150px" /></p>
           {% endif %}
+          <a href="{% url 'imo_app:accept_friend_profile' i.requester.id %}">Accept </a>
+          |
+          <a href="{% url 'imo_app:decline_friend_profile' i.requester.id %}">Decline </a>
+          <p></p> <!-- make sure to delete this when we get them side to side!!!!!! -->
           {% endfor %}
         <hr></hr>
       </div>
@@ -39,10 +43,10 @@
         <a href="{% url 'imo_app:all_friends' user.id %}">View All Friends</a>
         {% for i in f_all %}
           <div class="card">
-            <div class="col s6">
+            <div class="col s9">
               <div class="card-image">
                 {% if i.friend.picture %}
-                <a href="{% url 'imo_app:view_profile' i.friend.id %}"><img src='{{ i.friend.picture.url }}' class='img-responsive'/></a>
+                <a href="{% url 'imo_app:view_profile' i.friend.id %}"><img src='{{ i.friend.picture.url }}' class='img-responsive' width="150px" height="200px"/></a>
                 {% endif %}
               </div>
             <div class="card-action">

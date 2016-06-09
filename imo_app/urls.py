@@ -26,4 +26,8 @@ urlpatterns = [
     url(r'^request_friend/(?P<friend_id>\d+)/$', views.request_friend, name = 'request_friend'),
     url(r'^remove_friend/(?P<friend_id>\d+)/$', views.remove_friend, name = 'remove_friend'),
     url(r'^friends/(?P<user_id>\d+)/$', views.all_friends, name = 'all_friends'),
+    url(r'^accept_friend_profile/(?P<friend_id>\d+)/$', views.accept_friend_profile, name = 'accept_friend_profile'),
+    url(r'^decline_friend_profile/(?P<friend_id>\d+)/$', views.decline_friend_profile, name = 'decline_friend_profile'),
+    url(r'^accept_friend_friends_feed/(?P<friend_id>\d+)/$', views.accept_friend_friends_feed, name = 'accept_friend_friends_feed'),
+    url(r'^decline_friend_friends_feed/(?P<friend_id>\d+)/$', views.decline_friend_friends_feed, name = 'decline_friend_friends_feed'),
 ]

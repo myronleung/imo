@@ -14,7 +14,7 @@
         <div class="card" style="width: 250px">
           <div class="card-image">
             {% if i.picture %}
-            <img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" />
+            <a href="{% url 'imo_app:view_profile' i.id %}"><img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" /></a>
             {% endif %}
           </div>
           <div class="card-content">
