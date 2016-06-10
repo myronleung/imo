@@ -3,18 +3,15 @@
 {% block content %}
 
 <br></br>
-  </div>
-  <!-- left side -->
-    <!-- right side -->
-    <div class="container">
+
     <div class="row">
     <div class="col s3">
         <h4>Profiles</h4>
         {% for i in p_all %}
-        <div class="card" style="width: 250px">
+        <div class="card">
           <div class="card-image">
             {% if i.picture %}
-            <a href="{% url 'imo_app:view_profile' i.id %}"><img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="250px" /></a>
+            <a href="{% url 'imo_app:view_profile' i.id %}"><img src='{{ i.picture.url }}' class='img-responsive' width="250px" height="200px" /></a>
             {% endif %}
           </div>
           <div class="card-content">
@@ -26,7 +23,7 @@
           </div>
         </div>
         {% endfor %}
-    <div class="pagination">
+        <div class="pagination">
         <span class="step-links">
             {% if p_all.has_previous %}
                 <a href="?page={{ p_all.previous_page_number }}{% if request.GET.p %}&p={{ request.GET.p }}{% endif %}">previous</a>
@@ -78,6 +75,7 @@
           </div>
         {% endfor %}
         <!-- this is the pagination that allows us to have multiple pages -->
+        <div class="col s12">
         <div class="pagination">
             <span class="step-links">
                 {% if q_all.has_previous %}
@@ -94,6 +92,7 @@
             </span>
         </div>
       </div>
+    </div>
     </div>
   </div>
 
