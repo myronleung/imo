@@ -679,7 +679,7 @@ def request_friend(request, friend_id):
 
     return HttpResponseRedirect(reverse('imo_app:view_profile', args=[profile.id]))
 
-@login_required
+
 def accept_friend(request, friend_id):
     current_user = request.user
     friend1 = Friendship.objects.get(requester=current_user.id, friend=friend_id)
