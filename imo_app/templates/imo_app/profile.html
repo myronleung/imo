@@ -52,6 +52,8 @@
               <div class="card-image">
                 {% if i.friend.picture %}
                 <a href="{% url 'imo_app:view_profile' i.friend.id %}"><img src='{{ i.friend.picture.url }}' class='img-responsive' width="150px" height="200px"/></a>
+                {% else %}
+                <a href="{% url 'imo_app:view_profile' i.friend.id %}"><p><img src='{{ 100.url }}' class='img-responsive' width="150px" height="150px" /></p></a>
                 {% endif %}
               </div>
             <div class="card-action">

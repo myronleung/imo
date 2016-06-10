@@ -38,7 +38,7 @@
 
   {% for i in comments %}
       <div class="Comments">
-          <div class="date"><strong>{{ i.author }}</strong> <i>{{ i.pub_date }}</i></div>
+          <a href="{% url 'imo_app:view_profile' i.author.id %}"><div class="date"><strong>{{ i.author.name }}</strong></a> <i>{{ i.pub_date }}</i></div>
           <div class="divider"></div>
           <p>{{ i.comment_text }}</p>
           <br></br>
