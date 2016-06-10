@@ -755,7 +755,7 @@ def accept_friend_friends_feed(request, friend_id):
     person1.save()
     person2.save()
 
-    return HttpResponseRedirect(reverse('imo_app:friends_feed'))
+    return HttpResponseRedirect(reverse('imo_app:friends_polls'))
 
 @login_required
 def decline_friend_friends_feed(request, friend_id):
@@ -763,7 +763,7 @@ def decline_friend_friends_feed(request, friend_id):
     friend = Friendship.objects.filter(requester=friend_id, friend=current_user.id)
     friend.delete()
 
-    return HttpResponseRedirect(reverse('imo_app:friends_feed'))
+    return HttpResponseRedirect(reverse('imo_app:friends_polls'))
 
 @login_required
 def remove_friend(request, friend_id):

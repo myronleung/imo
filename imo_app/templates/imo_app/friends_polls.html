@@ -14,9 +14,9 @@
           {% else %}
           <a href="{% url 'imo_app:view_profile' i.requester.id %}"><p><img src='{{ 100.url }}' class='img-responsive' width="150px" height="150px" /></p></a>
           {% endif %}
-          <a href="{% url 'imo_app:accept_friend_profile' i.requester.id %}">Accept </a>
+          <a href="{% url 'imo_app:accept_friend_friends_feed' i.requester.id %}">Accept </a>
           |
-          <a href="{% url 'imo_app:decline_friend_profile' i.requester.id %}">Decline </a>
+          <a href="{% url 'imo_app:decline_friend_friends_feed' i.requester.id %}">Decline </a>
           <p></p> <!-- make sure to delete this when we get them side to side!!!!!! -->
         </div>
           {% endfor %}
