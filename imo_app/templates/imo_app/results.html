@@ -20,6 +20,9 @@
     {% csrf_token %}
     <input type="submit" value="edit" name='edit' class='btn' size=50%; />
     <input type="submit" value="delete" name='delete' class='btn' size=50%; />
+    {% if user.is_superuser %}
+    <input type="submit" value="reset inappropriate count" name='inappropriate' class='btn' size=50%; />
+    {% endif %}
   </form>
   {% endfor %}
 

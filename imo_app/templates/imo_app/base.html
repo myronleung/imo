@@ -44,6 +44,9 @@
             <li><a href="{% url 'imo_app:index' %}">Home</a></li>
             <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
             <li><a href="{% url 'imo_app:your_posts' %}">Your Polls</a></li>
+            {% if user.is_superuser %}
+            <li><a href="{% url 'imo_app:inappropriate' %}">Inappropriate Posts</a></li>
+            {% endif %}
           </ul>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
