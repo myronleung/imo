@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^faq/$', views.faq, name = 'faq'),
     url(r'^view_profile/(?P<id>\d+)/$', views.view_profile, name = 'view_profile'),
     url(r'^profile/$', views.profile, name = 'profile'),
+    url(r'^inappropriate/$', views.inappropriate, name = 'inappropriate'),    
     url(r'^search/', views.search, name = 'search'),
     url(r'^friends_polls/$', views.friends_polls, name = 'friends_polls'),
     url(r'^request_friend/(?P<friend_id>\d+)/$', views.request_friend, name = 'request_friend'),

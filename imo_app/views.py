@@ -210,6 +210,8 @@ def submit_vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
+        if request.POST.get('inappropriate'):
+            question.inappropriate += 1
         selected_choice.votes += 1
         selected_choice.save()
         choices = Choice.objects.all().filter(question=question)
@@ -258,7 +260,7 @@ def results(request, question_id):
     q = Question.objects.get(id = question_id)
     c = Comment.objects.filter(question=q)
     author = q.author.user.username
-    if (author == request.user.username):
+    if author == request.user.username or request.user.is_superuser:
         check_author = '1'
     else:
         check_author = ''
@@ -273,6 +275,11 @@ def edit(request, id=None):
     if (request.POST.get('delete')):
         Question.objects.filter(id=id).delete()
         return HttpResponseRedirect(reverse('imo_app:index'))
+    if (request.POST.get('inappropriate')):
+        q = Question.objects.get(id=id)
+        q.inappropriate = 0
+        q.save()
+        return HttpResponseRedirect(reverse('imo_app:inappropriate'))
     #since we don't have choice saved in question, set instance.values for form
     #if user clicked delete, delete post
     #else, create new form
@@ -547,6 +554,29 @@ def view_profile(request, id):
         'id': id
     }
     return render(request, 'imo_app/view_profile.html', context)
+
+@login_required
+def inappropriate(request):
+    current_user=request.user
+    if current_user.is_superuser:
+        q_list = Question.objects.filter(inappropriate__gte=1)
+        paginator = Paginator(q_list, 10) # Show 25 contacts per page
+        page = request.GET.get('page')
+        try:
+            q = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            q = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            q = paginator.page(paginator.num_pages)
+        context = {
+            'current_user': current_user,
+            'q_all': q
+        }
+        return render(request, 'imo_app/inappropriate.html', context)
+    else:
+        raise Http404
 
 @login_required
 def search(request):

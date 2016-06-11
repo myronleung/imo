@@ -16,6 +16,7 @@ class UserProfile(models.Model):
     about = models.TextField(null = True, blank = True, default='')
     motto = models.CharField(max_length=200, null = True, blank=True, default='')
     total_friends = models.IntegerField(default=0)
+    inappropriate = models.IntegerField(default=0)
     sponsor = models.BooleanField(default=False)
 
     def __str__(self):
@@ -39,6 +40,7 @@ class Question(models.Model):
     choice3 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image3 = models.ImageField(null=True, blank=True)
     total_votes = models.IntegerField(default = 1)
+    inappropriate = models.IntegerField(default=0)
 
 
     class Meta:
