@@ -210,6 +210,8 @@ def submit_vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
+        if request.POST.get('inappropriate'):
+            question.inappropriate += 1
         selected_choice.votes += 1
         selected_choice.save()
         choices = Choice.objects.all().filter(question=question)
