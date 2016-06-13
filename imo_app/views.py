@@ -117,14 +117,14 @@ def verify(request):
         form = VerifyForm(request.POST)
         if form.is_valid():
             activation_key = form.cleaned_data['activation_key']
-            if UserProfile.objects.get(activation_key=activation_key, verification=False):
+            if UserProfile.objects.filter(activation_key=activation_key, verification=False):
                 current_user = UserProfile.objects.get(activation_key=activation_key, verification=False)
                 current_user.verification = True
                 current_user.save()
                 return HttpResponseRedirect(reverse('imo_app:view_login'))
             else:
                 form = VerifyForm()
-                error_message = 'Please inform the administrator that you did not get a unique key'
+                error_message = 'Invalid key'
                 context = {
                     'form': form,
                     'error_message': error_message
@@ -156,25 +156,47 @@ def submit_login(request):
             # process the data in form.cleaned_data as required
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            current_user = UserProfile.objects.get(user__username=username)
-            if current_user.verification == True:
-                user = authenticate(username=username, password=password)
-                if user is not None:
-                    if user.is_active:
-                        login(request, user)
-                        # Redirect to a success page.
-                        # redirect to a new URL:
-                        return HttpResponseRedirect(reverse('imo_app:index'))
+            if UserProfile.objects.filter(user__username=username):
+                current_user = UserProfile.objects.get(user__username=username)
+                if current_user.verification == True:
+                    user = authenticate(username=username, password=password)
+                    if user is not None:
+                        if user.is_active:
+                            login(request, user)
+                            # Redirect to a success page.
+                            # redirect to a new URL:
+                            return HttpResponseRedirect(reverse('imo_app:index'))
+                        else:
+                            # Return a 'disabled account' error message
+                            # redirect to a new URL:
+                            return HttpResponseRedirect(reverse('imo_app:index'))
                     else:
-                        # Return a 'disabled account' error message
+                        # Return an 'invalid login' error message.
                         # redirect to a new URL:
-                        return HttpResponseRedirect(reverse('imo_app:index'))
+                        error_message = 'Login Failed'
+                        context = {'form':form, 'error_message':error_message}
+                        return render(request, 'imo_app/view_login.html', context)
                 else:
-                    # Return an 'invalid login' error message.
-                    # redirect to a new URL:
-                    error_message = 'Login Failed'
-                    context = {'form':form, 'error_message':error_message}
-                    return render(request, 'imo_app/view_login.html', context)
+                    error_message = 'Please verify your email.'
+                    form = VerifyForm()
+                    context = {
+                        'error_message': error_message,
+                        'form': form
+                    }
+                    return render(request, 'imo_app/verify.html', context)
+            else:
+                error_message = 'Invalid email.'
+                context = {
+                    'form': form,
+                    'error_message': error_message
+                }
+                return render(request, 'imo_app/view_login.html', context)
+        else:
+            # Return an 'invalid login' error message.
+            # redirect to a new URL:
+            error_message = 'Login Failed'
+            context = {'form':form, 'error_message':error_message}
+            return render(request, 'imo_app/view_login.html', context)
     # if a GET (or any other method) we'll create a blank form
     else:
         form = RegistrationForm()
