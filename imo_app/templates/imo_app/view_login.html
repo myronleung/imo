@@ -1,8 +1,11 @@
 {% extends 'imo_app/base.html' %}
 
 {% block content %}
-  <h4>Login<h4>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% if error_message %}
+    <p><strong>{{ error_message }}</strong></p>
+    {% else %}
+    <h4>Login<h4>
+    {% endif %}
     <form class="" action="{% url 'imo_app:submit_login'%}" method="post">
       {% csrf_token %}
       <div class="fieldWrapper">

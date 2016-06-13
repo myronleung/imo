@@ -1,8 +1,11 @@
 {% extends 'imo_app/base.html' %}
 
 {% block content %}
-  <h4>Login<h4>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    {% if error_message %}
+    <p><strong>{{ error_message }}</strong></p>
+    {% else %}
+    <h5>Please check your email for a verification key.<h5>
+    {% endif %}
     <form class="" action="{% url 'imo_app:verify' %}" method="post">
       {% csrf_token %}
       <div class="fieldWrapper">
@@ -10,7 +13,7 @@
         <label for='{{ form.activation_key }}'> Verification key: </label>
         {{ form.activation_key }}
       </div>
-      <input type="submit" value="Login" class = "btn"/>
+      <input type="submit" value="Verify" class = "btn"/>
     </form>
     <br></br>
     <br></br>

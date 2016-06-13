@@ -48,6 +48,7 @@
           </div>
         {% endfor %}
         <!-- this is the pagination that allows us to have multiple pages -->
+        <div class = "col s12">
         <div class="pagination">
             <span class="step-links">
                 {% if q_all.has_previous %}
@@ -63,6 +64,7 @@
                 {% endif %}
             </span>
         </div>
+      </div>
       </div>
 
     {% else %}
