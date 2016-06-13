@@ -18,6 +18,8 @@ class UserProfile(models.Model):
     total_friends = models.IntegerField(default=0)
     inappropriate = models.IntegerField(default=0)
     sponsor = models.BooleanField(default=False)
+    verification = models.BooleanField(default=False)
+    activation_key = models.CharField(max_length=100, default='')    
 
     def __str__(self):
         return self.user.username

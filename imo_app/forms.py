@@ -9,6 +9,9 @@ class RegistrationForm(forms.Form):
     email = forms.EmailField(label='Email:')
     password = forms.CharField(label='Password:', widget=forms.PasswordInput())
 
+class VerifyForm(forms.Form):
+    activation_key = forms.CharField(label='activation_key:', max_length=200)
+
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username:', max_length=200)
     password = forms.CharField(label='Password:', widget=forms.PasswordInput())

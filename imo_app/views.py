@@ -1,7 +1,11 @@
+import random, string
+
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 from django.db.models import Q, F
+from django.conf import settings
+from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -11,11 +15,14 @@ from django.contrib.auth import authenticate
 
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm
+from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm, VerifyForm
 from .models import UserProfile, Question, Choice, Comment, Voted, Friendship
 
 from django.utils import timezone
 # Create your views here.
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 def index(request):
     q_list = Question.objects.all()
     if request.GET.get("q"):
@@ -76,22 +83,63 @@ def submit_registration(request):
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
             name = first_name + ' ' + last_name
+            activation_key = id_generator(15)
 
             u = User.objects.create_user(username = username, password = password, email = email, first_name=first_name, last_name=last_name)
             u.save()
             p = UserProfile(user = u)
             p.name = name
+            p.activation_key = activation_key
             p.save()
-            user = authenticate(username=username, password=password)
-            login(request, user)
+            subject = 'IMO account verification'
+            message = 'Welcome to IMO!  Please copy this verification password into the box on the page you were redirected to in order to verify your account: %s' %(activation_key)
+            from_email = settings.EMAIL_HOST_USER
+            to_list = [p.user.email, settings.EMAIL_HOST_USER]
+
+            send_mail(subject, message, from_email, to_list, fail_silently=True)
+
+            form = VerifyForm()
+
+            context = {
+                'form': form
+            }
             # redirect to a new URL:
-            return HttpResponseRedirect(reverse('imo_app:index'))
+            return render(request, 'imo_app/verify.html', context)
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = RegistrationForm()
 
     return render(request, 'imo_app/view_registration.html', {'form': form})
+
+def verify(request):
+    if request.method == 'POST':
+        form = VerifyForm(request.POST)
+        if form.is_valid():
+            activation_key = form.cleaned_data['activation_key']
+            if UserProfile.objects.get(activation_key=activation_key, verification=False):
+                current_user = UserProfile.objects.get(activation_key=activation_key, verification=False)
+                current_user.verification = True
+                current_user.save()
+                return HttpResponseRedirect(reverse('imo_app:view_login'))
+            else:
+                form = VerifyForm()
+                error_message = 'Please inform the administrator that you did not get a unique key'
+                context = {
+                    'form': form,
+                    'error_message': error_message
+                }
+                return render(request, 'imo_app/verify.html', context)
+        else:
+            form = VerifyForm()
+            error_message = 'Please enter a valid key'
+            context = {
+                'form': form,
+                'error_message': error_message
+            }
+            return render(request, 'imo_app/verify.html', context)
+    else:
+        return HttpResponseRedirect(reverse, 'imo_app:index')
 
 def view_login(request):
     template = loader.get_template('imo_app/view_login.html')
@@ -108,24 +156,25 @@ def submit_login(request):
             # process the data in form.cleaned_data as required
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                if user.is_active:
-                    login(request, user)
-                    # Redirect to a success page.
-                    # redirect to a new URL:
-                    return HttpResponseRedirect(reverse('imo_app:index'))
+            current_user = UserProfile.objects.get(user__username=username)
+            if current_user.verification == True:
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    if user.is_active:
+                        login(request, user)
+                        # Redirect to a success page.
+                        # redirect to a new URL:
+                        return HttpResponseRedirect(reverse('imo_app:index'))
+                    else:
+                        # Return a 'disabled account' error message
+                        # redirect to a new URL:
+                        return HttpResponseRedirect(reverse('imo_app:index'))
                 else:
-                    # Return a 'disabled account' error message
+                    # Return an 'invalid login' error message.
                     # redirect to a new URL:
-                    return HttpResponseRedirect(reverse('imo_app:index'))
-            else:
-                # Return an 'invalid login' error message.
-                # redirect to a new URL:
-                error_message = 'Login Failed'
-                context = {'form':form, 'error_message':error_message}
-                return render(request, 'imo_app/view_login.html', context)
-
+                    error_message = 'Login Failed'
+                    context = {'form':form, 'error_message':error_message}
+                    return render(request, 'imo_app/view_login.html', context)
     # if a GET (or any other method) we'll create a blank form
     else:
         form = RegistrationForm()
