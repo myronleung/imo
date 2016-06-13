@@ -84,27 +84,36 @@ def submit_registration(request):
             last_name = form.cleaned_data['last_name']
             name = first_name + ' ' + last_name
             activation_key = id_generator(15)
+            if request.POST.get('tos'):
+                u = User.objects.create_user(username = username, password = password, email = email, first_name=first_name, last_name=last_name)
+                u.save()
+                p = UserProfile(user = u)
+                p.name = name
+                p.activation_key = activation_key
+                p.terms_of_service = True
+                p.save()
+                subject = 'IMO account verification'
+                message = 'Welcome to IMO!  Please copy this verification password into the box on the page you were redirected to in order to verify your account: %s' %(activation_key)
+                from_email = settings.EMAIL_HOST_USER
+                to_list = [p.user.email, settings.EMAIL_HOST_USER]
 
-            u = User.objects.create_user(username = username, password = password, email = email, first_name=first_name, last_name=last_name)
-            u.save()
-            p = UserProfile(user = u)
-            p.name = name
-            p.activation_key = activation_key
-            p.save()
-            subject = 'IMO account verification'
-            message = 'Welcome to IMO!  Please copy this verification password into the box on the page you were redirected to in order to verify your account: %s' %(activation_key)
-            from_email = settings.EMAIL_HOST_USER
-            to_list = [p.user.email, settings.EMAIL_HOST_USER]
+                send_mail(subject, message, from_email, to_list, fail_silently=True)
 
-            send_mail(subject, message, from_email, to_list, fail_silently=True)
+                form = VerifyForm()
 
-            form = VerifyForm()
-
-            context = {
-                'form': form
-            }
-            # redirect to a new URL:
-            return render(request, 'imo_app/verify.html', context)
+                context = {
+                    'form': form
+                }
+                # redirect to a new URL:
+                return render(request, 'imo_app/verify.html', context)
+            else:
+                error_message = 'Please read and accept the Terms of Service.'
+                form = RegistrationForm()
+                context = {
+                    'form': form,
+                    'error_message': error_message
+                }
+                return render(request, 'imo_app/view_registration.html', context)
 
     # if a GET (or any other method) we'll create a blank form
     else:

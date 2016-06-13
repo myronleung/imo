@@ -19,7 +19,8 @@ class UserProfile(models.Model):
     inappropriate = models.IntegerField(default=0)
     sponsor = models.BooleanField(default=False)
     verification = models.BooleanField(default=False)
-    activation_key = models.CharField(max_length=100, default='')    
+    activation_key = models.CharField(max_length=100, default='')
+    terms_of_service = models.BooleanField(default=False)   
 
     def __str__(self):
         return self.user.username

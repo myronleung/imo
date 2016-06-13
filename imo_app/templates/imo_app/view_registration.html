@@ -1,9 +1,11 @@
 {% extends 'imo_app/base.html' %}
 
 {% block content %}
-
-  <h4>Sign Up<h4>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+  {% if error_message %}
+  <p><strong>{{ error_message }}</strong></p>
+  {% else %}
+  <h4>Registration<h4>
+  {% endif %}
     <form class="" action="{% url 'imo_app:submit_registration'%}" method="post">
       {% csrf_token %}
         {{ form.non_field_errors }}
@@ -27,6 +29,54 @@
           <label for='{{ form.password }}'> Password </label>
           {{ form.password }}
         </div>
+      <h5>IMO Terms of Service</h5>
+      <h6>
+      <p> At IMO we want to create a safe and fun environment for our users to interact with their peers.  We see this site
+        as a space for users to share ideas, opinions, and interact with other people in a constructive and beneficial manner.
+        We do our best to keep this site as safe and user-friendly as possible.  In order to do this effectively, we are producing this Terms of Service
+        that we require all patrons of the site to read and abidy by.
+      <p>By using IMO.com, you certify that you have read, understood, and agree to be bound to the terms and conditions of this agreement.
+      IMO reserves the right to modify or replace these Terms of Service at any time. If such modification occurs,
+      you will be prompted to accept the new Terms of Service upon your next login.</p>
+
+      <ol>
+        <li><strong>Privacy</strong></li>
+        <p>Your privacy is very important to us.  Sensitive information such as your email and password will not be
+          distributed to any users of the website.</p>
+        <p>Personal information, such as: your name, your birthday, gender, motto, and about, will be displayed on your profile.
+          You have the discretion whether or not to display all of your information, except your name which is necessary to the
+          foundational purpose of this website.  We highly recommend that you display this information in order to make new connections
+          and friends who share similar interests.</p>
+        <p>While we collect your information in order to display it on our website and to your friends and peers, we will not distribute
+          any of your information to third party sites or services.  If you choose to share your Uploaded Content, or any information about yourself
+          to any third parties, that is at your discretion and responsibility.</p>
+        <li><strong>Uploaded Content </strong> </li>
+        <p>Our goal is to provide you with a space to post your ideas and questions to have them answered by your peers, friends, and family.</p>
+        <p>Any content that you post or otherwise make available on our website or affiliated services is referred to as "Uploaded Content."
+          As a user of IMO.com, you retain all rights in, and are solely responsible for the User Content you post to IMO.  IMO is not responsible
+          for any user Uploaded Content.</p>
+        <p><i>Graphic Content</i> containing, but not limited to, pornography, hateful speech, graphic or gratuitious violence is strictly prohibited.
+          Use of such materials will result in deletion of the content, as well as a review of your account, possibly resulting in permanently banning your access to this site.</p>
+        <p>Users have the ability to "mark as innappropriate" any question that they deem inappropriate on the voting page.  Questions marked as such will
+          be reviewed by site moderators.  If the moderators deem these questions as inappropriate, they will be removed, otherwise, they will be
+          unmarked and removed from review.</p>
+        <li><strong>Activity</strong></li>
+        <p>In the pursuit of making this site safe and user-friendly, we require the assistance of our patrons.  During your use
+          of this site you make a commitment to:
+          <ul>1. Not attack, bully or defame any other patron of the website.</ul>
+          <ul>2. You will not use IMO to commit any unlaw, criminal, or malicious acts.</ul>
+          <ul>3. You will not upload any viruses or malicious code, or attempt to infiltrate the website in any way.</ul>
+          <ul>4. You will not commit any action that could impair the functionality or appearance of IMO.</ul>
+          <ul>5. You will not access an account or solicit login information belonging to another user.</ul>
+      </ol>
+      <p>We thank you very much for your understanding and agreement to abide by our Terms of Service.  We appreciate your help
+        in making this the best site possible, and your continued support throughout our development.  We look forward to serving you
+        and making your use of our site as fun and beneficial as possible.</p>
+
+      </h6>
+      <input type="checkbox" id='tos' name='tos' value='tos'>
+      <label for='tos'>I certify that I have read the Terms of Service.</label>
+      <br></br>
       <input type="submit" value="Register" class='btn' />
     </form>
 {% endblock %}
