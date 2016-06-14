@@ -353,8 +353,24 @@ def results(request, question_id):
 @login_required
 def edit(request, id=None):
     if (request.POST.get('delete')):
-        Question.objects.filter(id=id).delete()
-        return HttpResponseRedirect(reverse('imo_app:index'))
+        current_user = request.user
+        question = Question.objects.get(id=id)
+        author = question.author
+        #if it's a super user deleting it, it's inappropriate or their own posts
+        if current_user.is_superuser:
+            #if super user's own questions, then don't give them an inappropriate
+            if author == current_user:
+                Question.objects.filter(id=id).delete()
+                return HttpResponseRedirect(reverse('imo_app:index'))
+            #if normal account, then give inappropriate
+            else:
+                author.inappropriate += 1
+                Question.objects.filter(id=id).delete()
+            return HttpResponseRedirect(reverse('imo_app:index'))
+        #if it's not a super user, don't give inappropriate
+        else:
+            Question.objects.filter(id=id).delete()
+            return HttpResponseRedirect(reverse('imo_app:index'))
     if (request.POST.get('inappropriate')):
         q = Question.objects.get(id=id)
         q.inappropriate = 0
@@ -367,7 +383,7 @@ def edit(request, id=None):
     old_choices = Choice.objects.all().filter(question=instance)
     author = instance.author
     current_user = request.user
-    if author.user.username == current_user.username:
+    if author.user.username == current_user.username or current_user.is_superuser:
         if (request.POST.get('edit')):
             instance.choice1 = old_choices[0]
             instance.image1 = old_choices[0].image
