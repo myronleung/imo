@@ -12,9 +12,9 @@ def get_env_variable(var_name):
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_env_variable('DATABASE_NAME'),
-        'USER': get_env_variable('DATABASE_USER'),
-        'PASSWORD': get_env_variable('DATABASE_PASSWORD'),
+        'NAME': 'imo_db',
+        'USER': 'root',
+        'PASSWORD': 'vjus84gcKpV5',
         'HOST': 'localhost',
         'PORT': '3306',
     }
