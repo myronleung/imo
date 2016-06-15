@@ -1,0 +1,45 @@
+{% extends "imo_app/base.html" %}
+
+{% block content %}
+<div class='col-sm-6 col-sm-offset-3'>
+<h4>{{ i.topic }}</h4>
+<hr></hr>
+<p>{{ i.feedback }}<p>
+{{ i.author.name }} | <i>{{ i.pub_date }}</i>
+<br></br>
+<br></br>
+
+<form action="{% url 'imo_app:feedback_comment' i.id %}" method="post">
+  {% csrf_token %}
+<p><input type="TextArea" style = "height:30px; width:700px" class = 'comment_text' value="" name='comment_text'/></p>
+<input type="submit" value="Comment" class='btn' size=50%; />
+</form>
+<br></br>
+<br></br>
+<h5> Comments </h5>
+    <hr>
+
+{% for i in comments %}
+    <div class="Comments">
+        <a href="{% url 'imo_app:view_profile' i.author.id %}"><div class="date"><strong>{{ i.author.name }}</strong></a> <i>{{ i.pub_date }}</i></div>
+        <div class="divider"></div>
+        <p>{{ i.comment_text }}</p>
+        <br></br>
+    </div>
+{% empty %}
+
+    <p>No comments yet</p>
+{% endfor %}
+</div>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+
+
+{% endblock content %}

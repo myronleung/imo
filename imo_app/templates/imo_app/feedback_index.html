@@ -1,0 +1,48 @@
+{% extends "imo_app/base.html" %}
+
+{% block content %}
+<div class='col-sm-6 col-sm-offset-3'>
+<p> Thank you all for participating in our new website.  We understand and anticipate that there will be many alterations and improvements
+  made thanks to your recommendations.  Please feel free to leave feedback below, whether it be a suggestion, a bug, or a feature that you do
+  not like.  We appreciate your effort in helping us improve this website so that it can be as beneficial to you as possible.</p>
+<h4>Feedback</h4>
+<a class = 'btn' href='{% url "imo_app:feedback" %}'>Create Feedback</a>
+<hr></hr>
+{% for i in f_all %}
+<p><a href='{% url "imo_app:feedback_topic" i.id %}'>{{ i.topic }}</a><p>
+{{ i.author.name }} | <i>{{ i.pub_date }}</i>
+<br></br>
+{% endfor %}
+
+<div class = "col s12">
+<div class="pagination">
+    <span class="step-links">
+        {% if f_all.has_previous %}
+            <a href="?page={{ f_all.previous_page_number }}{% if request.GET.f %}&f={{ request.GET.f }}{% endif %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ f_all.number }} of {{ f_all.paginator.num_pages }}.
+        </span>
+
+        {% if f_all.has_next %}
+            <a href="?page={{ f_all.next_page_number }}{% if request.GET.f %}&f={{ request.GET.f }}{% endif %}">next</a>
+        {% endif %}
+    </span>
+</div>
+</div>
+</div>
+
+</div>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+<br></br>
+
+
+{% endblock content %}

@@ -15,8 +15,8 @@ from django.contrib.auth import authenticate
 
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm, VerifyForm
-from .models import UserProfile, Question, Choice, Comment, Voted, Friendship
+from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm, VerifyForm, FeedbackForm
+from .models import UserProfile, Question, Choice, Comment, Voted, Friendship, Feedback
 
 from django.utils import timezone
 # Create your views here.
@@ -901,3 +901,89 @@ def remove_friend(request, friend_id):
     person2.save()
 
     return HttpResponseRedirect(reverse('imo_app:index'))
+
+@login_required
+def feedback(request):
+    form = FeedbackForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        current_user = request.user
+        author = UserProfile.objects.get(id=current_user.id)
+        pub_date = timezone.now()
+        feedback = Feedback(author = author, topic = instance.topic, feedback = instance.feedback, screenshot = instance.screenshot, pub_date = pub_date)
+        feedback.save()
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+    context = {
+        'form': form
+    }
+    return render(request, 'imo_app/feedback_form.html', context)
+
+@login_required
+def feedback_topic(request, feedback_id):
+    instance = get_object_or_404(Feedback, id=feedback_id)
+    context = {
+        'i': instance
+    }
+    return render(request, 'imo_app/feedback_topic.html', context)
+
+@login_required
+def feedback_index(request):
+    f_list = Feedback.objects.all()
+    if request.GET.get("q"):
+        query = request.GET.get("f")
+        f_list = search_bars(f_list, query)
+    paginator = Paginator(f_list, 12) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        f = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        f = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        f = paginator.page(paginator.num_pages)
+
+    return render(request, 'imo_app/feedback_index.html', {'f_all': f})
+
+@login_required
+def feedback_update(request, id=None):
+    instance = get_object_or_404(Feedback, id=id)
+    form = FeedbackForm(request.POST or None, request.FILES or None, instance = instance)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.save()
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+    context = {
+        "instance": instance,
+        "form": form
+    }
+    return render(request, 'imo-app/feedback_form.html', context)
+
+@login_required
+def feedback_delete(request):
+    instance = get_object_or_404(Feedback, id=id)
+    instance.delete()
+    return redirect('imo_app/feedback_index.html')
+
+def feedback_comment(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    comments = request.POST.get('comment_text')
+    #Print the comments taken from the HTML
+    print ("----------------")
+    print (comments)
+    print ("----------------")
+    #If they're trying to post it, set up all the input information
+    if request.POST:
+        current_user = request.user
+        author =  UserProfile.objects.get(id=current_user.id)
+        comment_text = comments
+        pub_date = timezone.now()
+        #Pass the information to Comment model and save it
+        comment = FeedbackComment(feedback = feedback, author = author, comment_text = comment_text, pub_date = pub_date)
+        comment.save()
+        #If it worked, add comment and display results
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+
+    else:
+        #If they aren't trying to post, just display results
+        return render(request, 'imo_app/feedback_index.html')

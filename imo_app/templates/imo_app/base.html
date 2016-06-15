@@ -17,7 +17,7 @@
     <nav>
       <div class="nav-wrapper" style="background-color: #66CCCC">
       <ul class="right hide-on-med-and-down">
-        <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>In My Opinion</strong></a>
+        <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
         {% if user.is_authenticated %}
           <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
           <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
@@ -35,7 +35,7 @@
           {% if user.is_authenticated %}
           <a class="brand-logo center">
           <form action="{% url 'imo_app:search' %}" method="GET">
-          <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search IMO' value='{{ request.GET.a }}'  />
+          <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search GetYO' value='{{ request.GET.a }}'  />
           </form>
           </a>
           {% endif %}
@@ -50,7 +50,7 @@
           </ul>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
-            <li><a href="{% url 'imo_app:faq' %}">FAQ</a></li>
+            <li><a href="{% url 'imo_app:feedback_index' %}">Feedback</a></li>
             <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
           {% endif %}
           </ul>
