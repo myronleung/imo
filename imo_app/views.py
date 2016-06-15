@@ -356,18 +356,11 @@ def edit(request, id=None):
         current_user = request.user
         question = Question.objects.get(id=id)
         author = question.author
-        #if it's a super user deleting it, it's inappropriate or their own posts
-        if current_user.is_superuser:
-            #if super user's own questions, then don't give them an inappropriate
-            if author == current_user:
-                Question.objects.filter(id=id).delete()
-                return HttpResponseRedirect(reverse('imo_app:index'))
-            #if normal account, then give inappropriate
-            else:
-                author.inappropriate += 1
-                Question.objects.filter(id=id).delete()
+        if current_user.is_superuser and author.id is not current_user.id:
+            author.inappropriate += 1
+            author.save()
+            Question.objects.filter(id=id).delete()
             return HttpResponseRedirect(reverse('imo_app:index'))
-        #if it's not a super user, don't give inappropriate
         else:
             Question.objects.filter(id=id).delete()
             return HttpResponseRedirect(reverse('imo_app:index'))
