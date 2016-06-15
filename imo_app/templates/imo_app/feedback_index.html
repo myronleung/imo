@@ -8,13 +8,23 @@
 <h4>Feedback</h4>
 <a class = 'btn' href='{% url "imo_app:feedback" %}'>Create Feedback</a>
 <hr></hr>
+
 {% for i in f_all %}
-<p><a href='{% url "imo_app:feedback_topic" i.id %}'>{{ i.topic }}</a><p>
-{{ i.author.name }} | <i>{{ i.pub_date }}</i>
-{% if current_user.is_superuser %}
-<p>Number of agrees: {{ i.agree }}</p>
-{% endif %}
+<div class=card>
+  <div class="card-content">
+    <p><a href='{% url "imo_app:feedback_topic" i.id %}'>{{ i.topic }}</a><p>
+    <hr></hr>
+    <div class="chip">
+      {{ i.author.name }} | <i>{{ i.pub_date }}</i>
+    </div>
+      {% if current_user.is_superuser %}
+      <div class="orange-text waves-effect waves-teal card-action btn-flat" style="width:100%; height: 100%">
+      <p>Number of agrees: {{ i.agree }}</p>
+    </div>
+  {% endif %}
 <br></br>
+</div>
+</div>
 {% endfor %}
 
 <div class = "col s12">
