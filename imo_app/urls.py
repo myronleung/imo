@@ -36,7 +36,7 @@ urlpatterns = [
     url(r'^create_feedback/$', views.feedback, name = 'feedback'),
     url(r'^feedback/$', views.feedback_index, name = 'feedback_index'),
     url(r'^feedback/(?P<feedback_id>\d+)/$', views.feedback_topic, name = 'feedback_topic'),
-    url(r'^feedback_edit/(?P<user_id>\d+)/$', views.feedback_update, name = 'feedback_edit'),
-    url(r'^feedback_delete/(?P<user_id>\d+)/$', views.feedback_delete, name = 'feedback_delete'),
-    url(r'^feedback_comment/(?P<feedback_id>\d+)/$', views.feedback_comment, name = 'feedback_comment'),    
+    url(r'^feedback_update/(?P<feedback_id>\d+)/$', views.feedback_update, name = 'feedback_update'),
+    url(r'^feedback_comment/(?P<feedback_id>\d+)/$', views.feedback_comment, name = 'feedback_comment'),
+    url(r'^feedback_agree/(?P<feedback_id>\d+)/$', views.feedback_agree, name = 'feedback_agree'),
 ]

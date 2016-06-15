@@ -11,6 +11,9 @@
 {% for i in f_all %}
 <p><a href='{% url "imo_app:feedback_topic" i.id %}'>{{ i.topic }}</a><p>
 {{ i.author.name }} | <i>{{ i.pub_date }}</i>
+{% if current_user.is_superuser %}
+<p>Number of agrees: {{ i.agree }}</p>
+{% endif %}
 <br></br>
 {% endfor %}
 

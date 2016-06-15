@@ -16,7 +16,7 @@ from django.contrib.auth import authenticate
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm, VerifyForm, FeedbackForm
-from .models import UserProfile, Question, Choice, Comment, Voted, Friendship, Feedback
+from .models import UserProfile, Question, Choice, Comment, Voted, Friendship, Feedback, FeedbackVoted, FeedbackComment
 
 from django.utils import timezone
 # Create your views here.
@@ -920,14 +920,24 @@ def feedback(request):
 
 @login_required
 def feedback_topic(request, feedback_id):
+    current_user = request.user
     instance = get_object_or_404(Feedback, id=feedback_id)
+    comments = FeedbackComment.objects.filter(feedback=feedback_id)
+    if current_user.id == instance.author.id or current_user.is_superuser:
+        author = 1
+    else:
+        author = 0
     context = {
-        'i': instance
+        'i': instance,
+        'author': author,
+        'current_user': current_user,
+        'comments': comments
     }
     return render(request, 'imo_app/feedback_topic.html', context)
 
 @login_required
 def feedback_index(request):
+    current_user = request.user
     f_list = Feedback.objects.all()
     if request.GET.get("q"):
         query = request.GET.get("f")
@@ -942,29 +952,32 @@ def feedback_index(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         f = paginator.page(paginator.num_pages)
-
-    return render(request, 'imo_app/feedback_index.html', {'f_all': f})
+    context = {
+        'f_all': f,
+        'current_user': current_user
+    }
+    return render(request, 'imo_app/feedback_index.html', context)
 
 @login_required
-def feedback_update(request, id=None):
-    instance = get_object_or_404(Feedback, id=id)
-    form = FeedbackForm(request.POST or None, request.FILES or None, instance = instance)
-    if form.is_valid():
+def feedback_update(request, feedback_id):
+    instance = Feedback.objects.get(id=feedback_id)
+    if (request.POST.get('delete')):
+        instance.delete()
+        return HttpResponseRedirect(reverse('imo_app:feedback_index'))
+    elif (request.POST.get('edit')):
+        form = FeedbackForm(instance = instance)
+    elif request.method == 'POST':
+        form = FeedbackForm(request.POST or None, request.FILES or None, instance=instance)
         instance = form.save(commit=False)
         instance.save()
-        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[instance.id]))
     context = {
         "instance": instance,
         "form": form
     }
-    return render(request, 'imo-app/feedback_form.html', context)
+    return render(request, 'imo_app/feedback_form.html', context)
 
 @login_required
-def feedback_delete(request):
-    instance = get_object_or_404(Feedback, id=id)
-    instance.delete()
-    return redirect('imo_app/feedback_index.html')
-
 def feedback_comment(request, feedback_id):
     feedback = get_object_or_404(Feedback, id=feedback_id)
     comments = request.POST.get('comment_text')
@@ -987,3 +1000,17 @@ def feedback_comment(request, feedback_id):
     else:
         #If they aren't trying to post, just display results
         return render(request, 'imo_app/feedback_index.html')
+
+@login_required
+def feedback_agree(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    current_user = request.user
+    voter = UserProfile.objects.get(id=current_user.id)
+    if FeedbackVoted.objects.filter(voter=voter, feedback=feedback):
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+    else:
+        vote = FeedbackVoted(voter=voter, feedback=feedback)
+        vote.save()
+        feedback.agree += 1
+        feedback.save()
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))

@@ -5,10 +5,28 @@
 <h4>{{ i.topic }}</h4>
 <hr></hr>
 <p>{{ i.feedback }}<p>
-{{ i.author.name }} | <i>{{ i.pub_date }}</i>
+{% if i.screenshot %}
+<img src='{{ i.screenshot.url }}' class='img-responsive' width="500px" height="500px" />
+{% endif %}
+<p>{{ i.author.name }} | <i>{{ i.pub_date }}</i></p>
 <br></br>
 <br></br>
-
+<br></br>
+{% if author > 0 %}
+<form action="{% url 'imo_app:feedback_update' i.id %}" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="edit" name='edit' class='btn' size=50%; />
+  <input type="submit" value="delete" name='delete' class='btn' size=50%; />
+</form>
+{% else %}
+<!-- if they agree with the feedback -->
+<form action="{% url 'imo_app:feedback_agree' i.id %}" method="post">
+  {% csrf_token %}
+<input id='agree' type="submit" value="Agree" class='btn' />
+<label for='agree'>Please click here if you agree with this feedback.</label>
+</form>
+{% endif %}
+<!-- for the comments -->
 <form action="{% url 'imo_app:feedback_comment' i.id %}" method="post">
   {% csrf_token %}
 <p><input type="TextArea" style = "height:30px; width:700px" class = 'comment_text' value="" name='comment_text'/></p>
