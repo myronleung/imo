@@ -49,6 +49,8 @@ def detail(request, question_id):
     c = Comment.objects.filter(question=q)
     v = Voted.objects.filter(voter=u, question = q)
     author = q.author.user.username
+    if author == current_user.username:
+        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
