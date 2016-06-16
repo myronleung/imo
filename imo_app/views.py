@@ -558,8 +558,14 @@ def profile(request):
                 'picture': author.picture,
             }
             return render(request, 'imo_app/profile.html', context)
+        else:
+            error_message = 'Please enter a proper birthday (mm/dd/yy or mm/dd/yyyy)'
+            context = {
+                'error_message': error_message,
+                'form': form
+            }
+        return render(request, 'imo_app/profile_form.html', context)
         context = {
-            "instance": instance,
             "form": form,
         }
         return render(request, 'imo_app/profile_form.html', context)
@@ -649,6 +655,9 @@ def inappropriate(request):
     current_user=request.user
     if current_user.is_superuser:
         q_list = Question.objects.filter(inappropriate__gte=1)
+        if request.GET.get("q"):
+            query = request.GET.get("q")
+            q_list = search_bars(q_list, query)
         paginator = Paginator(q_list, 10) # Show 25 contacts per page
         page = request.GET.get('page')
         try:
