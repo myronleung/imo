@@ -2,6 +2,7 @@
 from .base import *
 from django.core.exceptions import ImproperlyConfigured
 
+
 def get_env_variable(var_name):
     try:
         return os.environ[var_name]
@@ -42,3 +43,13 @@ CSRF_COOKIE_HTTPONLY = True
 X_FRAME_OPTIONS = 'DENY'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+#AWS S3
+DEFAULT_FILE_STORAGE = 'aws_storage_classes.MediaStorage'
+AWS_ACCESS_KEY_ID = 'AKIAJZ3QEGJQDNUEIQQQ'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'imo-s3'
+STATICFILES_STORAGE = 'aws_storage_classes.StaticStorage'
+AWS_S3_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+STATIC_URL = "https://%s/static/" % AWS_S3_DOMAIN
+MEDIA_URL = "https://%s/media/" % AWS_S3_DOMAIN
