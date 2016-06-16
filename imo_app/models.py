@@ -17,10 +17,11 @@ class UserProfile(models.Model):
     motto = models.CharField(max_length=200, null = True, blank=True, default='')
     total_friends = models.IntegerField(default=0)
     inappropriate = models.IntegerField(default=0)
+    join_date = models.DateField(blank=True, null=True)
     sponsor = models.BooleanField(default=False)
     verification = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=100, default='')
-    terms_of_service = models.BooleanField(default=False)   
+    terms_of_service = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -42,7 +43,7 @@ class Question(models.Model):
     image2 = models.ImageField(null=True, blank=True)
     choice3 = models.CharField(null=True, blank=True, default = '', max_length = 200)
     image3 = models.ImageField(null=True, blank=True)
-    total_votes = models.IntegerField(default = 1)
+    total_votes = models.IntegerField(default = 0)
     inappropriate = models.IntegerField(default=0)
 
 
@@ -94,3 +95,33 @@ class Friendship(models.Model):
     friend = models.ForeignKey(UserProfile, related_name="friend_set")
     status = models.CharField(max_length=50, default='')
     relation_date = models.DateTimeField(auto_now_add=True, editable=False)
+
+class Feedback(models.Model):
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    topic = models.CharField(max_length=200, default='')
+    feedback = models.TextField(default='')
+    screenshot = models.ImageField(null=True, blank=True)
+    pub_date = models.DateTimeField('date published')
+    agree = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['-pub_date']
+
+    def __str__(self):
+        return self.topic
+
+class FeedbackComment(models.Model):
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE)
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    comment_text = models.CharField(max_length=1000, default = '')
+    pub_date = models.DateTimeField('date published')
+
+    class Meta:
+        ordering = ['-pub_date']
+
+    def __str__(self):
+        return self.comments_text
+
+class FeedbackVoted(models.Model):
+    voter = models.ForeignKey(UserProfile)
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE)

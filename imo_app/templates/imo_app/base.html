@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>imo</title>
+    <title>GetYO</title>
     <link rel="stylesheet" type="text/css" href="{% static 'imo_app/css/imo.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'materialize/css/materialize.min.css' %}" />
 
@@ -17,7 +17,7 @@
     <nav>
       <div class="nav-wrapper" style="background-color: #66CCCC">
       <ul class="right hide-on-med-and-down">
-        <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>In My Opinion</strong></a>
+        <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
         {% if user.is_authenticated %}
           <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
           <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
@@ -35,7 +35,7 @@
           {% if user.is_authenticated %}
           <a class="brand-logo center">
           <form action="{% url 'imo_app:search' %}" method="GET">
-          <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search IMO' value='{{ request.GET.a }}'  />
+          <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search GetYO' value='{{ request.GET.a }}'  />
           </form>
           </a>
           {% endif %}
@@ -50,7 +50,7 @@
           </ul>
           <ul id="nav-mobile" class="right hide-on-med-and-down">
             <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
-            <li><a href="{% url 'imo_app:faq' %}">FAQ</a></li>
+            <li><a href="{% url 'imo_app:feedback_index' %}">Feedback</a></li>
             <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
           {% endif %}
           </ul>
@@ -71,17 +71,17 @@
       <div class="container" >
         <div class="row">
           <div class="col l6 s12">
-            <h5 class="white-text"><strong>Welcome to IMO!</strong></h5>
+            <h5 class="white-text"><strong>Welcome to GetYO!</strong></h5>
             <p class="grey-text text-lighten-4">Thank you for participating in our development.
             If you have any questions or would like to provide feedback,
-            click on the contact link at the right or email us directly at imoappdevelopment@gmail.com.</p>
+            click on the contact link at the right or email us directly at getyoappdevelopment@gmail.com.</p>
           </div>
           <div class="col l4 offset-l2 s12">
             <h5 class="white-text">Helpful Links</h5>
             <ul>
               <li><a class="grey-text text-lighten-3" href="{% url 'imo_app:about' %}">About</a></li>
               <li><a class="grey-text text-lighten-3" href="{% url 'imo_app:faq' %}">FAQ</a></li>
-              <li><a class="grey-text text-lighten-3" href="mailto:imoappdevelopment@gmail.com">Contact</a></li>
+              <li><a class="grey-text text-lighten-3" href="mailto:getyoappdevelopment@gmail.com">Contact</a></li>
             </ul>
           </div>
         </div>

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Question, UserProfile
+from .models import Question, UserProfile, Feedback
 
 
 class RegistrationForm(forms.Form):
@@ -49,3 +49,12 @@ class VoteForm(forms.Form):
 
 class CommentForm(forms.Form):
     comment_text = forms.CharField(label='Comment: ', max_length = 1000)
+
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = [
+            "topic",
+            "feedback",
+            "screenshot"
+        ]

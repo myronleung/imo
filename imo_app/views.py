@@ -15,8 +15,8 @@ from django.contrib.auth import authenticate
 
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm, VerifyForm
-from .models import UserProfile, Question, Choice, Comment, Voted, Friendship
+from .forms import RegistrationForm, LoginForm, NewEntryForm, VoteForm, CommentForm, ProfileForm, VerifyForm, FeedbackForm
+from .models import UserProfile, Question, Choice, Comment, Voted, Friendship, Feedback, FeedbackVoted, FeedbackComment
 
 from django.utils import timezone
 # Create your views here.
@@ -49,8 +49,6 @@ def detail(request, question_id):
     c = Comment.objects.filter(question=q)
     v = Voted.objects.filter(voter=u, question = q)
     author = q.author.user.username
-    if author == current_user.username:
-        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
@@ -91,6 +89,7 @@ def submit_registration(request):
                 p.name = name
                 p.activation_key = activation_key
                 p.terms_of_service = True
+                p.join_date = timezone.now()
                 p.save()
                 subject = 'IMO account verification'
                 message = 'Welcome to IMO!  Please copy this verification password into the box on the page you were redirected to in order to verify your account: %s' %(activation_key)
@@ -300,8 +299,6 @@ def submit_vote(request, question_id):
         choice3 = choices[2].votes
         question.total_votes = choice1 + choice2 + choice3
         question.save()
-        selected_choice.percentage = round((selected_choice.votes / question.total_votes) * 100.0,2)
-        selected_choice.save()
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
@@ -346,15 +343,27 @@ def results(request, question_id):
         check_author = ''
     choices = Choice.objects.filter(question = q)
     for i in choices:
-        i.percentage = round((i.votes / q.total_votes) * 100, 2)
+        if q.total_votes != 0:
+            i.percentage = round((i.votes / q.total_votes) * 100, 2)
+        else:
+            i.percentage = 0
     context = {'question':q, 'choices': choices, 'comments': c, 'check_author': check_author}
     return render(request, 'imo_app/results.html', context)
 
 @login_required
 def edit(request, id=None):
     if (request.POST.get('delete')):
-        Question.objects.filter(id=id).delete()
-        return HttpResponseRedirect(reverse('imo_app:index'))
+        current_user = request.user
+        question = Question.objects.get(id=id)
+        author = question.author
+        if current_user.is_superuser and author.id is not current_user.id:
+            author.inappropriate += 1
+            author.save()
+            Question.objects.filter(id=id).delete()
+            return HttpResponseRedirect(reverse('imo_app:index'))
+        else:
+            Question.objects.filter(id=id).delete()
+            return HttpResponseRedirect(reverse('imo_app:index'))
     if (request.POST.get('inappropriate')):
         q = Question.objects.get(id=id)
         q.inappropriate = 0
@@ -367,7 +376,7 @@ def edit(request, id=None):
     old_choices = Choice.objects.all().filter(question=instance)
     author = instance.author
     current_user = request.user
-    if author.user.username == current_user.username:
+    if author.user.username == current_user.username or current_user.is_superuser:
         if (request.POST.get('edit')):
             instance.choice1 = old_choices[0]
             instance.image1 = old_choices[0].image
@@ -549,8 +558,14 @@ def profile(request):
                 'picture': author.picture,
             }
             return render(request, 'imo_app/profile.html', context)
+        else:
+            error_message = 'Please enter a proper birthday (mm/dd/yy or mm/dd/yyyy)'
+            context = {
+                'error_message': error_message,
+                'form': form
+            }
+        return render(request, 'imo_app/profile_form.html', context)
         context = {
-            "instance": instance,
             "form": form,
         }
         return render(request, 'imo_app/profile_form.html', context)
@@ -640,6 +655,9 @@ def inappropriate(request):
     current_user=request.user
     if current_user.is_superuser:
         q_list = Question.objects.filter(inappropriate__gte=1)
+        if request.GET.get("q"):
+            query = request.GET.get("q")
+            q_list = search_bars(q_list, query)
         paginator = Paginator(q_list, 10) # Show 25 contacts per page
         page = request.GET.get('page')
         try:
@@ -892,3 +910,116 @@ def remove_friend(request, friend_id):
     person2.save()
 
     return HttpResponseRedirect(reverse('imo_app:index'))
+
+@login_required
+def feedback(request):
+    form = FeedbackForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        current_user = request.user
+        author = UserProfile.objects.get(id=current_user.id)
+        pub_date = timezone.now()
+        feedback = Feedback(author = author, topic = instance.topic, feedback = instance.feedback, screenshot = instance.screenshot, pub_date = pub_date)
+        feedback.save()
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+    context = {
+        'form': form
+    }
+    return render(request, 'imo_app/feedback_form.html', context)
+
+@login_required
+def feedback_topic(request, feedback_id):
+    current_user = request.user
+    instance = get_object_or_404(Feedback, id=feedback_id)
+    comments = FeedbackComment.objects.filter(feedback=feedback_id)
+    if current_user.id == instance.author.id or current_user.is_superuser:
+        author = 1
+    else:
+        author = 0
+    context = {
+        'i': instance,
+        'author': author,
+        'current_user': current_user,
+        'comments': comments
+    }
+    return render(request, 'imo_app/feedback_topic.html', context)
+
+@login_required
+def feedback_index(request):
+    current_user = request.user
+    f_list = Feedback.objects.all()
+    if request.GET.get("q"):
+        query = request.GET.get("f")
+        f_list = search_bars(f_list, query)
+    paginator = Paginator(f_list, 12) # Show 25 contacts per page
+    page = request.GET.get('page')
+    try:
+        f = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        f = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        f = paginator.page(paginator.num_pages)
+    context = {
+        'f_all': f,
+        'current_user': current_user
+    }
+    return render(request, 'imo_app/feedback_index.html', context)
+
+@login_required
+def feedback_update(request, feedback_id):
+    instance = Feedback.objects.get(id=feedback_id)
+    if (request.POST.get('delete')):
+        instance.delete()
+        return HttpResponseRedirect(reverse('imo_app:feedback_index'))
+    elif (request.POST.get('edit')):
+        form = FeedbackForm(instance = instance)
+    elif request.method == 'POST':
+        form = FeedbackForm(request.POST or None, request.FILES or None, instance=instance)
+        instance = form.save(commit=False)
+        instance.save()
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[instance.id]))
+    context = {
+        "instance": instance,
+        "form": form
+    }
+    return render(request, 'imo_app/feedback_form.html', context)
+
+@login_required
+def feedback_comment(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    comments = request.POST.get('comment_text')
+    #Print the comments taken from the HTML
+    print ("----------------")
+    print (comments)
+    print ("----------------")
+    #If they're trying to post it, set up all the input information
+    if request.POST:
+        current_user = request.user
+        author =  UserProfile.objects.get(id=current_user.id)
+        comment_text = comments
+        pub_date = timezone.now()
+        #Pass the information to Comment model and save it
+        comment = FeedbackComment(feedback = feedback, author = author, comment_text = comment_text, pub_date = pub_date)
+        comment.save()
+        #If it worked, add comment and display results
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+
+    else:
+        #If they aren't trying to post, just display results
+        return render(request, 'imo_app/feedback_index.html')
+
+@login_required
+def feedback_agree(request, feedback_id):
+    feedback = get_object_or_404(Feedback, id=feedback_id)
+    current_user = request.user
+    voter = UserProfile.objects.get(id=current_user.id)
+    if FeedbackVoted.objects.filter(voter=voter, feedback=feedback):
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))
+    else:
+        vote = FeedbackVoted(voter=voter, feedback=feedback)
+        vote.save()
+        feedback.agree += 1
+        feedback.save()
+        return HttpResponseRedirect(reverse('imo_app:feedback_topic', args=[feedback.id]))

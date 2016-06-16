@@ -1,17 +1,78 @@
 {% extends "imo_app/base.html" %}
 
 {% block content %}
+
 <h3>FAQ</h3>
   <ol>
-    <li> <strong> What is IMO? </strong> </li>
+    <li> <strong> What is GetYO? </strong> </li>
+      <p>GetYO stands for Get Your Opinion!  Do you ever have troubles making a decision?  Our team certainly
+        does, and that's the reason why we decided to make GetYO.  Whether it be a product we’re looking at, or just an idea,
+         we’re unsure which to pick.  Often times we turn to the person next to us,
+         but that’s only one person who generally will say whatever they think you want to hear. </p>
+      <p> As a result we created GetYO.  Our goal is to provide individuals the ability
+          to ask for an opinion on something they’re curious about, and quickly receive
+          feedback from real people on what they would suggest.</p>
+    <li> <strong> How do I use GetYO? </strong> </li>
+      <p>There are two main purposes of the app - get an opinion or give an opinion </p>
+      <dl>
+        <dt><i> Get an opinion <br></br></i></dt>
+        <dd>Through getting an opinion you follow the create a new poll prompt.
+            Next, create a question with a title, description, and anywhere between one and three choices.
+            These choices can consist of just text, just images, or both!
+            After you submit the question, it will be posted on the homepage for the public to see and give you their opinion!<br></br></dd>
+        <dd>As responses are given, data will be made available through the question's results page.
+            Simply click on the question from anywhere on our site, and it will take you to this results page.<br></br></dd>
+        <dt><i> Give an opinion <br></br></i></dt>
+        <dd>As a responder you’re able to give your opinion on any visible question on the site!
+            To give a response, simply click on the question, which will take you to a voting page.
+            <br></br></dd>
+        <dd>After you make your decision, you'll be taken to the same results page as above where you can
+        see the statistics of the choices, as well as comment further on why you made your selection..<br></br></dd>
+      <d1>
+    <li> <strong> Does the app cost anything? </strong> </li>
+      <p> <strong> No! </strong>  We believe that people should be able to get opinions and
+          help on solving their dilemmas.  We do not believe that people should have to pay in order to
+          see what people recommend.  </p>
+    <li> <strong> Do I need to provide any personal information? </strong> </li>
+      <p> Nothing is mandatory except your name.  We highly recommend that you provide some basic information
+        about you in your profile page.  One of the best benefits of this website is the ability to add friends who you know,
+        or make new friends who share similar interests!
+          </p>
+    <li> <strong> Why do I have friends in this app? </strong> </li>
+      <p> Friends allow you to keep up-to-date with what decisions they're currently thinking about.
+        Not only can you see what they're debating, but you can also provide your input and directly help them!
+        As you develop new friendships, you'll be able to find friends with similar interests as you.  These individuals
+        will likely be able to give you great advice on your own questions.</p>
+    <li> <strong> Can I make friends with people who aren’t already my friends on other social medias? </strong> </li>
+      <p> Yes!  We highly encourage that you make new friends who share similar interests and opinions as you.
+        This will help you to get their opinions in the future!   </p>
+    <li> <strong> I have a suggestion for the website.  Is there anywhere I can give it to the GetYO team? </strong> </li>
+      <p> Yes, we greatly appreciate all feedback, whether positive or constructive.  There are two ways that you can leave feedback.
+        You can send an email directly to <a href="mailto:getyoappdevelopment@gmail.com">getyoappdevelopment@gmail.com,</a> or you can click on the <a href="{% url 'imo_app:feedback_index' %}">feedback</a> tab at the top right of your page.
+        Once you're on that page, simply create a new feedback and we will be able to view and respond to it.
+
+  </ol>
+{% endblock %}
+
+
+
+
+
+
+
+
+<!-- Old FAQ, has some extra info in it we don't need yet
+<h3>FAQ</h3>
+  <ol>
+    <li> <strong> What is GetYO? </strong> </li>
       <p>Our team has had some troubles throughout our lives deciding between
          two or more decisions.  Whether it be a product we’re looking at, or just an idea,
          we’re unsure which to pick.  Often times we turn to the person next to us,
          but that’s only one person and generally will say whatever they think you want them to hear. </p>
-      <p> As a result we created IMO.  Our goal is to provide individuals the ability
+      <p> As a result we created GetYO.  Our goal is to provide individuals the ability
           to ask for an opinion on something they’re curious about, and quickly receive
           feedback from real people on what they would suggest.</p>
-    <li> <strong> How do I use IMO? </strong> </li>
+    <li> <strong> How do I use GetYO? </strong> </li>
       <p>There are two main purposes of the app - get an opinion or give an opinion </p>
       <dl>
         <dt><i> Get an opinion <br></br></i></dt>
@@ -50,4 +111,4 @@
           or possibly you share similar opinions.  This will allow you to ask them for
           opinions easily in the future.   </p>
   </ol>
-{% endblock %}
+-->
