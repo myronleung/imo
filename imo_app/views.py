@@ -49,8 +49,6 @@ def detail(request, question_id):
     c = Comment.objects.filter(question=q)
     v = Voted.objects.filter(voter=u, question = q)
     author = q.author.user.username
-    if author == current_user.username:
-        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
@@ -301,8 +299,6 @@ def submit_vote(request, question_id):
         choice3 = choices[2].votes
         question.total_votes = choice1 + choice2 + choice3
         question.save()
-        selected_choice.percentage = round((selected_choice.votes / question.total_votes) * 100.0,2)
-        selected_choice.save()
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
@@ -347,7 +343,10 @@ def results(request, question_id):
         check_author = ''
     choices = Choice.objects.filter(question = q)
     for i in choices:
-        i.percentage = round((i.votes / q.total_votes) * 100, 2)
+        if q.total_votes != 0:
+            i.percentage = round((i.votes / q.total_votes) * 100, 2)
+        else:
+            i.percentage = 0
     context = {'question':q, 'choices': choices, 'comments': c, 'check_author': check_author}
     return render(request, 'imo_app/results.html', context)
 
