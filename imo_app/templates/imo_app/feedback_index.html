@@ -12,8 +12,8 @@
 {% for i in f_all %}
 <p><div class=card></p>
   <div class="card-content">
-    <p><a href='{% url "imo_app:feedback_topic" i.id %}'>{{ i.topic }}</a><p>
-    <hr></hr>
+    <p><span class="card-title"><a href='{% url "imo_app:feedback_topic" i.id %}'style = "font-size: 20px">{{ i.topic }}</a><p>
+    </span><hr></hr>
     <div class="chip">
       {{ i.author.name }} | <i>{{ i.pub_date }}</i>
     </div>

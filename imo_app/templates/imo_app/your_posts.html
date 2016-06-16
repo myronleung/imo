@@ -25,7 +25,7 @@
           <div class="col m6">
             <div class="card" >
               <div class="card-content">
-                <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}">{{ i.question_text }}</a></span>
+                <span class="card-title truncate"><a href="{% url 'imo_app:detail' i.id %}"style = "font-size: 20px">{{ i.question_text }}</a></span>
                 <hr></hr>
                 <div class="chip">
                   {{ i.author.user.first_name}} {{ i.author.user.last_name}}
