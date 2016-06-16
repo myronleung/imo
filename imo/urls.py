@@ -20,13 +20,13 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
-    url(r'^imo_app/', include('imo_app.urls')),
+    url(r'^app/', include('imo_app.urls')),
     url(r'^admin/', admin.site.urls),
 
     #Attempt to get static files
 
     # redierect home page to journal_app index
-    url(r'^$', lambda r: HttpResponseRedirect('imo_app/')),
+    url(r'^$', lambda r: HttpResponseRedirect('app/')),
 ]
 
 if settings.DEBUG:
