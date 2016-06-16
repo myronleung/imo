@@ -17,6 +17,7 @@ class UserProfile(models.Model):
     motto = models.CharField(max_length=200, null = True, blank=True, default='')
     total_friends = models.IntegerField(default=0)
     inappropriate = models.IntegerField(default=0)
+    join_date = models.DateField(blank=True, null=True)
     sponsor = models.BooleanField(default=False)
     verification = models.BooleanField(default=False)
     activation_key = models.CharField(max_length=100, default='')

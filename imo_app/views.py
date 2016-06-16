@@ -91,6 +91,7 @@ def submit_registration(request):
                 p.name = name
                 p.activation_key = activation_key
                 p.terms_of_service = True
+                p.join_date = timezone.now()
                 p.save()
                 subject = 'IMO account verification'
                 message = 'Welcome to IMO!  Please copy this verification password into the box on the page you were redirected to in order to verify your account: %s' %(activation_key)
