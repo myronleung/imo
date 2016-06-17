@@ -50,7 +50,7 @@ def detail(request, question_id):
     v = Voted.objects.filter(voter=u, question = q)
     author = q.author.user.username
     if author == current_user.username:
-        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))    
+        return HttpResponseRedirect(reverse('imo_app:results', args=[q.id]))
     print ('------')
     print (v)
     print ('------')
