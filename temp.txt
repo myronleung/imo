@@ -1,0 +1,18 @@
+    <div class = "navbar-fixed">
+      <div class = "col s12">
+        <nav>
+          <div class="nav-wrapper" style="background-color: #66CCCC">
+            <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
+            <ul class="right hide-on-med-and-down">
+              {% if user.is_authenticated %}
+                <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
+                <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
+              {% else %}
+                <li><a href = "{% url 'imo_app:view_registration' %}" style='width:100px'>Register</a></li>
+                <li><a href = "{% url 'imo_app:view_login' %}" style='width:100px'>Login</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>

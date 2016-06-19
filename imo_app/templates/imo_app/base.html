@@ -20,51 +20,76 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="{% static 'materialize/js/materialize.min.js' %}"></script>
 
+    <!--
     <div class = "navbar-fixed">
       <div class = "col s12">
         <nav>
           <div class="nav-wrapper" style="background-color: #66CCCC">
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-              <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
-              {% if user.is_authenticated %}
-                <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
-                <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
-              {% else %}
-                <li><a href = "{% url 'imo_app:view_registration' %}" style='width:100px'>Register</a></li>
-                <li><a href = "{% url 'imo_app:view_login' %}" style='width:100px'>Login</a></li>
-              {% endif %}
+            <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
+            <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+            {% if user.is_authenticated %}
+            <ul class="right hide-on-med-and-down">
+              <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
+              <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
             </ul>
+            {% else %}
+            <ul class="side-nav" id="mobile-demo" style="z-index:100">
+              <li><a href = "{% url 'imo_app:view_registration' %}" style='width:100px'>Register</a></li>
+              <li><a href = "{% url 'imo_app:view_login' %}" style='width:100px'>Login</a></li>
+            </ul>
+            {% endif %}
           </div>
         </nav>
       </div>
     </div>
-
+    -->
     <div class = "navbar-fixed">
       <div class="col s12">
         <nav>
           <div class="nav-wrapper" style="background-color: #00CCFF">
+            <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
             {% if user.is_authenticated %}
-            <a class="brand-logo center">
-            <form action="{% url 'imo_app:search' %}" method="GET">
-            <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search GetYO' value='{{ request.GET.a }}'  />
-            </form>
-            </a>
+              <a href = "{% url 'imo_app:index' %}" class="brand-logo" style="font-size: 45px"><strong>GetYO</strong></a>
+              <ul class="right hide-on-med-and-down">
+                <li>
+                  <form action="{% url 'imo_app:search' %}" method="GET">
+                    <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search GetYO' value='{{ request.GET.a }}'/>
+                  </form>
+                </li>
+                <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
+                <li><a href="{% url 'imo_app:your_posts' %}">Your Polls</a></li>
+                {% if user.is_superuser %}
+                  <li><a href="{% url 'imo_app:inappropriate' %}">Inappropriate Posts</a></li>
+                {% endif %}
+                <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
+                <li><a href="{% url 'imo_app:feedback_index' %}">Feedback</a></li>
+                <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
+                <li style="font-size: 16px"><a>Welcome, {{ user.first_name }} {{user.last_name}}</a><a href = "{% url 'imo_app:user_logout' %}"> Log Out</a></li>
+              </ul>
+              <ul class="side-nav" id="mobile-demo">
+                <li><a>Welcome, {{ user.first_name }} {{user.last_name}}</a></li>
+                <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
+                <li><a href="{% url 'imo_app:index' %}">Home</a></li>
+                <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
+                <li><a href="{% url 'imo_app:your_posts' %}">Your Polls</a></li>
+                {% if user.is_superuser %}
+                  <li><a href="{% url 'imo_app:inappropriate' %}">Inappropriate Posts</a></li>
+                {% endif %}
+                <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
+                <li><a href="{% url 'imo_app:feedback_index' %}">Feedback</a></li>
+                <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
+              </ul>
+            {% else %}
+              <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
+              <ul class="right hide-on-med-and-down">
+                <li><a href = "{% url 'imo_app:view_registration' %}">Register</a></li>
+                <li><a href = "{% url 'imo_app:view_login' %}">Login</a></li>
+              </ul>
+              <ul class="side-nav" id="mobile-demo" style="z-index:100">
+                <li><a href = "{% url 'imo_app:view_registration' %}">Register</a></li>
+                <li><a href = "{% url 'imo_app:view_login' %}">Login</a></li>
+              </ul>
             {% endif %}
-            {% if user.is_authenticated %}
-            <ul id="nav-mobile" class="left hide-on-med-and-down" size="250%">
-              <li><a href="{% url 'imo_app:index' %}">Home</a></li>
-              <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
-              <li><a href="{% url 'imo_app:your_posts' %}">Your Polls</a></li>
-              {% if user.is_superuser %}
-              <li><a href="{% url 'imo_app:inappropriate' %}">Inappropriate Posts</a></li>
-              {% endif %}
-            </ul>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-              <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
-              <li><a href="{% url 'imo_app:feedback_index' %}">Feedback</a></li>
-              <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
-            {% endif %}
-            </ul>
           </div>
         </nav>
       </div>
@@ -104,5 +129,10 @@
       </div>
     </footer>
 
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $(".button-collapse").sideNav();
+      })
+    </script>
   </body>
 </html>
