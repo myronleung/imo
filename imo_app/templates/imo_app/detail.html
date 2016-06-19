@@ -15,7 +15,7 @@
         {% endif %}
         <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br />
         {% if choice.image != '' %}
-        <img src='{{ choice.image.url }}' class='img-responsive' width="250px" height="250px" /> <br />
+        <img src='{{ choice.image.url }}' class='responsive-img' width="250px" height="250px" /> <br />
         {% endif %}
         <br></br>
     {% endfor %}
