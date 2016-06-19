@@ -338,19 +338,23 @@ def add_comment(request, question_id):
 def results(request, question_id):
     q = Question.objects.get(id = question_id)
     c = Comment.objects.filter(question=q)
+    current_user = request.user
     author = q.author.user.username
-    if author == request.user.username or request.user.is_superuser:
-        check_author = '1'
-    else:
-        check_author = ''
-    choices = Choice.objects.filter(question = q)
-    for i in choices:
-        if q.total_votes != 0:
-            i.percentage = round((i.votes / q.total_votes) * 100, 2)
+    if Voted.objects.filter(voter=current_user.id, question = q) or author == request.user.username or request.user.is_superuser:
+        if author == request.user.username or request.user.is_superuser:
+            check_author = '1'
         else:
-            i.percentage = 0
-    context = {'question':q, 'choices': choices, 'comments': c, 'check_author': check_author}
-    return render(request, 'imo_app/results.html', context)
+            check_author = ''
+        choices = Choice.objects.filter(question = q)
+        for i in choices:
+            if q.total_votes != 0:
+                i.percentage = round((i.votes / q.total_votes) * 100, 2)
+            else:
+                i.percentage = 0
+        context = {'question':q, 'choices': choices, 'comments': c, 'check_author': check_author}
+        return render(request, 'imo_app/results.html', context)
+    else:
+        return HttpResponseRedirect(reverse('imo_app:detail', args=[q.id]))
 
 @login_required
 def edit(request, id=None):
