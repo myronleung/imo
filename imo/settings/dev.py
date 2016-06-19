@@ -2,6 +2,16 @@
 from .base import *
 from django.core.exceptions import ImproperlyConfigured
 
+import json
+
+SECRET_KEY = ''
+AWS_SECRET_ACCESS_KEY = ''
+
+with open ('/opt/bitnami/apps/django/django_projects/Project/keys.json') as data_file:
+    data = json.load(data_file)
+    SECRET_KEY = data['django_key']
+    AWS_SECRET_ACCESS_KEY = data['aws_key']
+
 
 def get_env_variable(var_name):
     try:
@@ -22,7 +32,7 @@ DATABASES = {
 }
 
 # if 'SECRET_KEY' in os.environ:
-SECRET_KEY = 'fl_v9(iu_qm_+mq^7c)bm0qcue(j%3=n63zx-6^&#17^)(ba5f'
+# SECRET_KEY = 'fl_v9(iu_qm_+mq^7c)bm0qcue(j%3=n63zx-6^&#17^)(ba5f'
 # SECRET_KEY = 'SECRET_KEY' in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -46,8 +56,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 #AWS S3
 DEFAULT_FILE_STORAGE = 'aws_storage_classes.MediaStorage'
-AWS_ACCESS_KEY_ID = 'AKIAJZ3QEGJQDNUEIQQQ'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIAJ74J6DWBXUFJ4V2A'
+# AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'imo-s3'
 STATICFILES_STORAGE = 'aws_storage_classes.StaticStorage'
 AWS_S3_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
