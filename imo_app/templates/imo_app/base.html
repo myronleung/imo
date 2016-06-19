@@ -5,6 +5,10 @@
   <head>
     <meta charset="utf-8">
     <title>GetYO</title>
+
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <link rel="stylesheet" type="text/css" href="{% static 'imo_app/css/imo.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'materialize/css/materialize.min.css' %}" />
 
@@ -12,55 +16,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
-  <div class = "navbar-fixed">
-      <div class = "col s12">
-    <nav>
-      <div class="nav-wrapper" style="background-color: #66CCCC">
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
-        {% if user.is_authenticated %}
-          <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
-          <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
-        {% else %}
-            <li><a href = "{% url 'imo_app:view_registration' %}" style='width:100px'>Register</a></li>
-            <li><a href = "{% url 'imo_app:view_login' %}" style='width:100px'>Login</a></li>
-          </ul>
-        {% endif %}
-    </div>
-  </div>
-</div>
-    </nav>
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="{% static 'materialize/js/materialize.min.js' %}"></script>
+
     <div class = "navbar-fixed">
-    <div class="col s12">
-    <nav>
-        <div class="nav-wrapper" style="background-color: #00CCFF">
-          {% if user.is_authenticated %}
-          <a class="brand-logo center">
-          <form action="{% url 'imo_app:search' %}" method="GET">
-          <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search GetYO' value='{{ request.GET.a }}'  />
-          </form>
-          </a>
-          {% endif %}
-          {% if user.is_authenticated %}
-          <ul id="nav-mobile" class="left hide-on-med-and-down" size="250%">
-            <li><a href="{% url 'imo_app:index' %}">Home</a></li>
-            <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
-            <li><a href="{% url 'imo_app:your_posts' %}">Your Polls</a></li>
-            {% if user.is_superuser %}
-            <li><a href="{% url 'imo_app:inappropriate' %}">Inappropriate Posts</a></li>
+      <div class = "col s12">
+        <nav>
+          <div class="nav-wrapper" style="background-color: #66CCCC">
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+              <a href = "{% url 'imo_app:index' %}" class="brand-logo center" style="font-size: 45px"><strong>GetYO</strong></a>
+              {% if user.is_authenticated %}
+                <li>Welcome, {{ user.first_name }} {{user.last_name}}</li>
+                <li><a href = "{% url 'imo_app:user_logout' %}">Log Out</a></li>
+              {% else %}
+                <li><a href = "{% url 'imo_app:view_registration' %}" style='width:100px'>Register</a></li>
+                <li><a href = "{% url 'imo_app:view_login' %}" style='width:100px'>Login</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <div class = "navbar-fixed">
+      <div class="col s12">
+        <nav>
+          <div class="nav-wrapper" style="background-color: #00CCFF">
+            {% if user.is_authenticated %}
+            <a class="brand-logo center">
+            <form action="{% url 'imo_app:search' %}" method="GET">
+            <input type='text' style="width: 270px" class = "center-align" name='a' placeholder='Search GetYO' value='{{ request.GET.a }}'  />
+            </form>
+            </a>
             {% endif %}
-          </ul>
-          <ul id="nav-mobile" class="right hide-on-med-and-down">
-            <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
-            <li><a href="{% url 'imo_app:feedback_index' %}">Feedback</a></li>
-            <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
-          {% endif %}
-          </ul>
-        </div>
-      </nav>
+            {% if user.is_authenticated %}
+            <ul id="nav-mobile" class="left hide-on-med-and-down" size="250%">
+              <li><a href="{% url 'imo_app:index' %}">Home</a></li>
+              <li><a href="{% url 'imo_app:profile' %}">Profile</a></li>
+              <li><a href="{% url 'imo_app:your_posts' %}">Your Polls</a></li>
+              {% if user.is_superuser %}
+              <li><a href="{% url 'imo_app:inappropriate' %}">Inappropriate Posts</a></li>
+              {% endif %}
+            </ul>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+              <li><a href="{% url 'imo_app:friends_polls' %}">Friends Polls</a></li>
+              <li><a href="{% url 'imo_app:feedback_index' %}">Feedback</a></li>
+              <li><a href="{% url 'imo_app:view_newentry' %}">Create New Poll</a></li>
+            {% endif %}
+            </ul>
+          </div>
+        </nav>
+      </div>
     </div>
-    </div>
-  </div>
+
+    <a class="waves-effect waves-light btn-large" href="#">Wave</a>
+    
     <div class="container">
       {% block content %}
       {% endblock %}
@@ -68,7 +79,7 @@
       <br></br>
       <br></br>
     </div>
-    <!--Import jQuery before materialize.js-->
+
 
     <footer class="page-footer" style="background-color: #00CCFF">
       <div class="container" >
