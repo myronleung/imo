@@ -1,2 +1,4 @@
 .DS_Store
 keys.json
+imo/settings/email_info.py
+imo/settings/test.txt

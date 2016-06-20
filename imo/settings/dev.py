@@ -11,6 +11,7 @@ with open ('/opt/bitnami/apps/django/django_projects/Project/keys.json') as data
     data = json.load(data_file)
     SECRET_KEY = data['django_key']
     AWS_SECRET_ACCESS_KEY = data['aws_key']
+    MYSQL_KEY = data['mysql_key']
 
 
 def get_env_variable(var_name):
@@ -25,7 +26,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'imo_db',
         'USER': 'root',
-        'PASSWORD': 'vjus84gcKpV5',
+        'PASSWORD': MYSQL_KEY,
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -56,8 +57,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 #AWS S3
 DEFAULT_FILE_STORAGE = 'aws_storage_classes.MediaStorage'
-AWS_ACCESS_KEY_ID = 'AKIAJ74J6DWBXUFJ4V2A'
-# AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = 'AKIAJ4ZZXFKWDLNIZZKQ'
 AWS_STORAGE_BUCKET_NAME = 'imo-s3'
 STATICFILES_STORAGE = 'aws_storage_classes.StaticStorage'
 AWS_S3_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
